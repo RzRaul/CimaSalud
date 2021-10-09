@@ -1,22 +1,18 @@
 import React from 'react';
 import { Button, Text, View } from 'react-native';
-import { StyleSheet } from 'react-native';
-
 import styles from '../styles/styles';
 
-const Inicio = ({navigation}) => {
+const Login = ({navigation}) => {
     return (
         <View style = {styles.container}>
-            <Text>  This is welcome Screen </Text>
+            <Text>  This is LoginScreen </Text>
             <Button 
-                title='Cambiar pantalla'
+                title='Volver a inicio'
                 color = '#1779ba'
-                onPress = {()=> navigation.navigate('Login')}
+                onPress = {()=> navigation.navigate('Inicio')}
             />
         </View>
     )
 }
 
-
-
-export default Inicio;
+export default Login;
