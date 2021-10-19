@@ -9,6 +9,42 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: 'cyan',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+    },
+    containerHeader:{
+        flex: 1,
+        backgroundColor: '#C1ACA1',
+        padding: 20
+    },
+    containerBody:{
+        flex: 0.8,
+        backgroundColor: '#9DD5D4',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'stretch',
+        padding: 10
+    },
+    space:{
+        flex: 0.2,
+        backgroundColor: '#F3F3F3',
+        alignSelf: 'stretch',
+        height: 20
+    },
+    textHeader:{
+        fontSize: 30,
+        fontWeight: 'bold'
+    },
+    textBody:{
+        fontSize: 20,
+        margin: 3
+    },
+    input: {
+        fontSize: 20,
+        height: 28,
+        width: 70,
+        margin: 3,
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: '#F3F3F3'
     }
 });

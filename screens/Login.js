@@ -9,7 +9,7 @@ const Login = ({navigation}) => {
             <Button 
                 title='Volver a inicio'
                 color = '#1779ba'
-                onPress = {()=> navigation.navigate('Inicio')}
+                onPress = {()=> navigation.navigate('Meta')}
             />
         </View>
     )

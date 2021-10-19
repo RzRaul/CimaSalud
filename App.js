@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import InicioScreen from "./screens/Inicio";
 import LoginScreen from "./screens/Login";
+import MetaScreen from "./screens/Meta";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,10 @@ const MyStack = () => {
         <Stack.Screen 
           name="Login" 
           component={LoginScreen} 
+        />
+        <Stack.Screen 
+          name="Meta" 
+          component={MetaScreen} 
         />
       </Stack.Navigator>
     </NavigationContainer>
