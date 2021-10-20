@@ -3,6 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {createDrawerNavigator} from "@react-navigation/drawer";
+import {AuthContext} from "./utils/AuthContext";
+import { loginReducer, initialState } from "./utils/authReducer";
 
 
 import HomeScreen from "./screens/HomeScreen";
@@ -14,67 +16,83 @@ import CommunityScreen from "./screens/CommunityScreen";
 import MoreScreen from "./screens/MoreScreen";
 import SplashScreen from "./screens/SplashScreen";
 
+const RootStack = createNativeStackNavigator();
 const LogStack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
-const Draws = createDrawerNavigator();
 
-// const LogScreen = () =>(
-//   <LogStack.Navigator>
-//     <LogStack.Screen  name= "Login" component={LoginScreen}/>
-//     <LogStack.Screen  name= "SignUp" component={SignupScreen}/>
-//   </LogStack.Navigator>
-// );
+const RootStackScreen = ({userToken})=>(
+    <RootStack.Navigator screenOptions={{headerShown:false}}>
+      {!userToken?(
+        <RootStack.Screen name="Auth" component={LogScreen}/>
+      ):(
+        <RootStack.Screen name="App" component={TabsScreen}/>
+      )}
+    </RootStack.Navigator>
+);
+const LogScreen = () =>(
+  <LogStack.Navigator>
+    <LogStack.Screen  name= "Login" component={LoginScreen}/>
+    <LogStack.Screen  name= "SignUp" component={SignupScreen}/>
+  </LogStack.Navigator>
+);
 
 
-// const TabsScreen = () =>(
-//   <Tabs.Navigator>
-//     <Tabs.Screen name="Home" component={HomeScreen} />
-//     <Tabs.Screen name="Food" component={FoodScreen} />
-//     <Tabs.Screen name="Goal" component={GoalScreen} />
-//     <Tabs.Screen name="Community" component={CommunityScreen} />
-//     <Tabs.Screen name="More" component={MoreScreen} />
-//   </Tabs.Navigator>
-// );
+const TabsScreen = () =>(
+  <Tabs.Navigator>
+    <Tabs.Screen name="Home" component={HomeScreen} />
+    <Tabs.Screen name="Food" component={FoodScreen} />
+    <Tabs.Screen name="Goal" component={GoalScreen} />
+    <Tabs.Screen name="Community" component={CommunityScreen} />
+    <Tabs.Screen name="More" component={MoreScreen} />
+  </Tabs.Navigator>
+);
 
 function App() {
-  // const [isLoading, setIsLoading] = React.useState(true); //Custom Splash
-  // React.useEffect(()=>{
-  //   setTimeout(()=>{
-  //     setIsLoading(false);
-  //   },1000);
-  // }
+  //const [isLoading, setIsLoading] = React.useState(true); //Custom Splash
+  //const [userToken, setuserToken] = React.useState(null);
+  const [loginState, dispatch] = React.useReducer(loginReducer,initialState);
 
-  // );
-  // if(isLoading){
-  //   return (<SplashScreen/>);
-  // }
-  const [userToken, setuserToken] = React.useState(null);
-  // const authContext = React.useMemo(()=>{
-  //   return {
-  //     signIn:()=>{
+  const authContext = React.useMemo(()=>{
+    return {
+      signIn: (eMail,userPassword) => {
+      //  setuserToken('asd');
+      //  setIsLoading(false);
+      let userToken;
+      if(eMail && userPassword){
+        userToken = 'asd';
+      }
+      dispatch({type: 'login', userMail: eMail, token: userToken});
+      },
+      signOut: () => {
+      //  setuserToken(null);
+      //  setIsLoading(false);
+      dispatch({type: 'logout'});
+      },
+      signUp: () => {
+      //  setuserToken('asd');
+      //  setIsLoading(false);
+      },
+    };
+  }, []);
+  React.useEffect(()=>{
+    setTimeout(()=>{
+      //setIsLoading(false);
+      dispatch({type:'signup', token:null});
+    },1000);
+  },[]);
 
-  //     },
-  //     signUp:
-  //   }
-  // });
+  if(loginState.isLoading){
+    return (<SplashScreen/>);
+  }
+  
+  
 
   return (
-    <NavigationContainer>
-      {!userToken ? (
-        <Tabs.Navigator>
-          <Tabs.Screen name='Inicio' component={HomeScreen} />
-          <Tabs.Screen name='Alimentos' component={FoodScreen} />
-          <Tabs.Screen name='Metas' component={GoalScreen} />
-          <Tabs.Screen name='Communidad' component={CommunityScreen} />
-          <Tabs.Screen name='Más...' component={MoreScreen} />
-        </Tabs.Navigator>
-      ) : (
-        <LogStack.Navigator>
-          <LogStack.Screen name='Login' component={LoginScreen} />
-          <LogStack.Screen name='SignUp' component={SignupScreen} />
-        </LogStack.Navigator>
-      )}
-    </NavigationContainer>
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer>
+        <RootStackScreen userToken={loginState.userToken} />
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 };
 
