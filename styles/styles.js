@@ -7,7 +7,7 @@ export const colors = {
 export default StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'cyan',
+        backgroundColor: '#d4c9b9',
         alignItems: 'center',
         justifyContent: 'center'
     }
