@@ -7,8 +7,9 @@ export const colors = {
 export default StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'cyan',
+        backgroundColor: '#d4c9b9',
         alignItems: 'center',
+<<<<<<< HEAD
         justifyContent: 'center',
     },
     containerHeader:{
@@ -46,5 +47,8 @@ export default StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         backgroundColor: '#F3F3F3'
+=======
+        justifyContent: 'space-evenly',
+>>>>>>> 3fb749a229c2670bf62e1ab262e9b8d1552c5f9c
     }
 });
