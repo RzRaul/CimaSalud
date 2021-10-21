@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -8,9 +8,9 @@ import MetaScreen from "./screens/Meta";
 
 const Stack = createNativeStackNavigator();
 
-const MyStack = () => {
+function App() {
   return (
-    <NavigationContainer>
+      <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
           name="Inicio"
@@ -27,7 +27,8 @@ const MyStack = () => {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    
   );
 };
 
-export default MyStack;
+export default App;
