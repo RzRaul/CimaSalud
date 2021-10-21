@@ -6,12 +6,6 @@ import {createDrawerNavigator} from "@react-navigation/drawer";
 import {AuthContext} from "./utils/AuthContext";
 import { loginReducer, initialState } from "./utils/authReducer";
 
-<<<<<<< HEAD
-import InicioScreen from "./screens/Inicio";
-import LoginScreen from "./screens/Login";
-import MetaScreen from "./screens/Meta";
-=======
->>>>>>> 3fb749a229c2670bf62e1ab262e9b8d1552c5f9c
 
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
@@ -96,29 +90,9 @@ function App() {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-<<<<<<< HEAD
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Inicio"
-          component={InicioScreen}
-          options={{ title: "Welcome" }}
-        />
-        <Stack.Screen 
-          name="Login" 
-          component={LoginScreen} 
-        />
-        <Stack.Screen 
-          name="Meta" 
-          component={MetaScreen} 
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-    
-=======
         <RootStackScreen userToken={loginState.userToken} />
       </NavigationContainer>
     </AuthContext.Provider>
->>>>>>> 3fb749a229c2670bf62e1ab262e9b8d1552c5f9c
   );
 };
 

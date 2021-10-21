@@ -9,7 +9,6 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: '#d4c9b9',
         alignItems: 'center',
-<<<<<<< HEAD
         justifyContent: 'center',
     },
     containerHeader:{
@@ -46,9 +45,7 @@ export default StyleSheet.create({
         margin: 3,
         paddingLeft: 10,
         paddingRight: 10,
-        backgroundColor: '#F3F3F3'
-=======
+        backgroundColor: '#F3F3F3',
         justifyContent: 'space-evenly',
->>>>>>> 3fb749a229c2670bf62e1ab262e9b8d1552c5f9c
     }
 });
