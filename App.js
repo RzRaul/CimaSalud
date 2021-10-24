@@ -41,7 +41,7 @@ const TabsScreen = () =>(
   <Tabs.Navigator>
     <Tabs.Screen name="Home" component={HomeScreen} />
     <Tabs.Screen name="Food" component={FoodScreen} />
-    <Tabs.Screen name="Goal" component={GoalScreen} />
+    <Tabs.Screen name="Goals" component={GoalScreen} />
     <Tabs.Screen name="Community" component={CommunityScreen} />
     <Tabs.Screen name="More" component={MoreScreen} />
   </Tabs.Navigator>
