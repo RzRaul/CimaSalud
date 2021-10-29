@@ -3,23 +3,24 @@ import { Button, Text, View, Image, FlatList, TextInput } from 'react-native';
 import styles from '../styles/styles';
 import ListItem from '../components/ListItem';
 
-const Meta = ({navigation}) => {
+const Goals = ({navigation}) => {
     const [editing, setEditing] = useState(false);
     const [items, setItems] = useState([
-        {text: 'Grasas', val: 10, meta: '0'},
-        {text: 'Proteinas', val: 0, meta: '10'},
-        {text: 'Calorias', val: 0, meta: '0'},
-        {text: 'Carbohidratos', val: 0, meta: '0'}
+        {text: 'Grasas', val: 10, meta: 0, id: 0},
+        {text: 'Proteinas', val: 0, meta: 10, id: 1},
+        {text: 'Calorias', val: 0, meta: 123, id: 2},
+        {text: 'Carbohidratos', val: 0, meta: 0, id: 3}
     ]);
     const MyInput = (props) => {
         return (
             <TextInput 
                 style={styles.input}
                 keyboardType="numeric"
-                value={props.item.meta}
+                //value={props.item.meta}
                 onChangeText={input => {
                     //props.item.meta = input;
-                    items[props.index].meta = input;
+                    if(!isNaN(Number(input)))
+                        items[props.index].meta = Number(input);
                 }}  
                  />
         );
@@ -49,12 +50,12 @@ const Meta = ({navigation}) => {
                         <Image source={require('../assets/icon.png')} style={{ width: 100, height: 100 }} />
                     </View>
                     <View style = {{paddingRight: 15}}>
-                        {items.map(item => (<Text style = {styles.textBody}>{item.text}</Text>))}
+                        {items.map(item => (<Text style={styles.textBody} id={item.id}>{item.text}</Text>))}
                     </View>
                     <View>
                         {editing? 
                             items.map((item,i) => (<MyInput item={item} index={i} />)):
-                            items.map(item => <Text style={styles.textBody}>{item.meta} g</Text>)}
+                            items.map(item => <Text style={styles.textBody}>{item.meta.toString()} g</Text>)}
                     </View>
                 </View>
             </View>
@@ -62,7 +63,7 @@ const Meta = ({navigation}) => {
             <View style = {{flex: 2}}>
             <FlatList 
                 data={items}
-                renderItem={({item}) => <ListItem item={item}/>} />
+                renderItem={({item}) => <ListItem item={item} key={item.id}/>} />
             </View>
             
             <Button 
@@ -74,4 +75,4 @@ const Meta = ({navigation}) => {
     );
 };
 
-export default Meta;
+export default Goals;
