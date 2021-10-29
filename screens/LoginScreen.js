@@ -11,7 +11,7 @@ const Login = ({navigation}) => {
             <Button 
                 title='Iniciar sesión'
                 color = '#1779ba'
-                onPress = {()=> signIn('asd', 'asd')}
+                onPress = {()=> signIn('rulas@test.com', 'pass123')}
             />
             <Button 
                 title='Crear Cuenta'

@@ -12,8 +12,9 @@ export const loginReducer = (prevState, action)=>{
 		case 'login':
 			return {
 				...prevState,
-				userMail: action.mail,
-				userToken: action.token,
+				userMail: action.userMail,
+				userName: action.userName,
+				userToken: action.userToken,
 				isLoading: false
 			};
 		case 'logout':
@@ -36,6 +37,7 @@ export const loginReducer = (prevState, action)=>{
 
 export const initialState = {
 	userName: '',
+	userMail:'',
 	userToken: null,
 	isLoading: true
 }

@@ -5,6 +5,7 @@ import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {createDrawerNavigator} from "@react-navigation/drawer";
 import {AuthContext} from "./utils/AuthContext";
 import { loginReducer, initialState } from "./utils/authReducer";
+import {login} from "./services/fetches"
 
 
 import HomeScreen from "./screens/HomeScreen";
@@ -51,29 +52,39 @@ function App() {
   //const [isLoading, setIsLoading] = React.useState(true); //Custom Splash
   //const [userToken, setuserToken] = React.useState(null);
   const [loginState, dispatch] = React.useReducer(loginReducer,initialState);
+  //const [dataState, dispatch] = React.useReducer(loginReducer,initialState);
 
-  const authContext = React.useMemo(()=>{
+  const globalContext = React.useMemo(()=>{
     return {
-      signIn: (eMail,userPassword) => {
+      signIn: (userMail,userPassword, userName) => {
       //  setuserToken('asd');
       //  setIsLoading(false);
       let userToken;
-      if(eMail && userPassword){
-        userToken = 'asd';
+      if(userMail && userPassword){
+       userToken = login(userMail, userPassword);
+       console.log('EL TOKEN: '+userToken);
       }
-      dispatch({type: 'login', userMail: eMail, token: userToken});
+      dispatch({type: 'login', userMail,userName, userToken});
+      
       },
       signOut: () => {
       //  setuserToken(null);
       //  setIsLoading(false);
       dispatch({type: 'logout'});
       },
-      signUp: () => {
+      signUp: (name, email, userPassword) => {
       //  setuserToken('asd');
       //  setIsLoading(false);
       },
+      getFood: (foodName) =>{
+  
+      },
+      getState:()=>{
+        return loginState;
+      }
+      
     };
-  }, []);
+   }, []);
   React.useEffect(()=>{
     setTimeout(()=>{
       //setIsLoading(false);
@@ -88,7 +99,7 @@ function App() {
   
 
   return (
-    <AuthContext.Provider value={authContext}>
+    <AuthContext.Provider value={globalContext}>
       <NavigationContainer>
         <RootStackScreen userToken={loginState.userToken} />
       </NavigationContainer>

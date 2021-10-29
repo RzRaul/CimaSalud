@@ -8,11 +8,11 @@ import styles from '../styles/styles';
 
 const Home = ({navigation}) => {
     //const {state, getUserInfo} = useContext(Context);
-    const {signOut} = React.useContext(AuthContext);
-
+    const {signOut, getState} = React.useContext(AuthContext);
+    const state = getState();
     return (
         <View style = {styles.container}>
-            <Text>  Esta es la pantalla de inicio </Text>
+            <Text>  Esta es la pantalla de inicio 2 {state.userName} </Text>
             <Button 
                 title='Cerrar sesión'
                 color = '#1779ba'
