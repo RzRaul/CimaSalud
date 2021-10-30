@@ -5,7 +5,7 @@ import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {createDrawerNavigator} from "@react-navigation/drawer";
 import {AuthContext} from "./utils/AuthContext";
 import { loginReducer, initialState } from "./utils/authReducer";
-import {login} from "./services/fetches"
+import * as UserFuncs from "./services/userFetchs"
 
 
 import HomeScreen from "./screens/HomeScreen";
@@ -56,28 +56,22 @@ function App() {
 
   const globalContext = React.useMemo(()=>{
     return {
-      signIn: (userMail,userPassword, userName) => {
-      //  setuserToken('asd');
-      //  setIsLoading(false);
+      signIn: (userMail,userPassword) => {
       let userToken;
+      let user;
       if(userMail && userPassword){
-       userToken = login(userMail, userPassword);
-       console.log('EL TOKEN: '+userToken);
+       userToken = UserFuncs.login(userMail, userPassword);
+       user = UserFuncs.getUserInfo(userToken);
       }
-      dispatch({type: 'login', userMail,userName, userToken});
-      
+      dispatch({type: 'login', userMail,userName: user.userName, userToken});
       },
       signOut: () => {
-      //  setuserToken(null);
-      //  setIsLoading(false);
-      dispatch({type: 'logout'});
+        dispatch({type: 'logout'});
       },
-      signUp: (name, email, userPassword) => {
-      //  setuserToken('asd');
-      //  setIsLoading(false);
-      },
-      getFood: (foodName) =>{
-  
+      signUp: (userName, userMail, userPassword) => {
+        let userToken= UserFuncs.signup(userMail,userPassword, userName);
+        user = UserFuncs.getUserInfo(userToken);
+        dispatch({type: 'signup', userMail: user.email, userName: user.name, token: usertoken})
       },
       getState:()=>{
         return loginState;
@@ -96,8 +90,6 @@ function App() {
     return (<SplashScreen/>);
   }
   
-  
-
   return (
     <AuthContext.Provider value={globalContext}>
       <NavigationContainer>

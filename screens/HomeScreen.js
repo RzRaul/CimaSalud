@@ -12,13 +12,12 @@ const Home = ({navigation}) => {
     const state = getState();
     return (
         <View style = {styles.container}>
-            <Text>  Esta es la pantalla de inicio 2 {state.userName} </Text>
+            <Text>  Bienvenido {state.userName}! </Text>
             <Button 
                 title='Cerrar sesión'
                 color = '#1779ba'
                 onPress = {()=> signOut()}
             />
-            
         </View>
     )
 }
