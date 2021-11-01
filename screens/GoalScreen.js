@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Text, View, Image, FlatList, TextInput } from 'react-native';
 import styles from '../styles/styles';
-import ListItem from '../components/ListItem';
+//import ListItem from '../components/ListItem';
 
 const Goals = ({navigation}) => {
     const [editing, setEditing] = useState(false);
@@ -25,6 +25,23 @@ const Goals = ({navigation}) => {
                  />
         );
     }
+    const ListItem = ({item}) => {
+        return (
+            <View style={{paddingTop: 20, backgroundColor: '#F3F3F3'}}>
+                <View style={{padding: 15, backgroundColor: '#9DD5D4'}}>
+                    <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style = {styles.textBody}>{item.text}</Text>
+                    </View>
+                    <View style = {{padding: 10, flexDirection: 'row', justifyContent: 'space-around'}}>
+                        <Image source={require('../assets/icon.png')} style={{ width: 50, height: 50 }} />
+    
+                        <Text style = {styles.textBody}>{item.val} / {item.meta}</Text>
+                        
+                    </View>
+                </View>
+            </View>
+        );
+    };
     
     return (
         <View style = {{flex: 1}}>
