@@ -34,6 +34,25 @@ export const getMyDays = async (token) => {
 	  return null;
 	}
  };
+ export const getDayByRange = async (token, StartDate, EndDate) => {
+	try {
+	  let response = await fetch(url + '/days/dateRange', {
+		 method: 'GET',
+		 headers: {
+			Authorization: 'Bearer ' + token,
+		 },
+		 body: JSON.stringify({
+			StartDate: StartDate,
+			EndDate: EndDate
+		 }),
+	  });
+	  let json = await response.json();
+	  return json;
+	} catch (error) {
+	  console.log(error);
+	  return null;
+	}
+ };
 
  export const postDay = async (token, day) => {
 	try {

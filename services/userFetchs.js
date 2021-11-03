@@ -57,13 +57,49 @@ export const login = async (mail, pass) => {
  export const updateUserInfo = async (token, newUser) => {
 	try {
 	  let response = await fetch(url + '/user/update', {
-		 method: 'GET',
+		 method: 'POST',
 		 headers: {
 			Authorization: 'Bearer ' + token,
 		 },
-		 body: JSON.stringify(
-			newUser
-		 )
+		 body: JSON.stringify({
+			user: newUser
+		 })
+	  });
+	  let json = await response.json();
+	  return json.user;
+	} catch (error) {
+	  console.log(error);
+	  return null;
+	}
+ };
+ export const updateUserIMC = async (token, imc) => {
+	try {
+	  let response = await fetch(url + '/user/updateIMC', {
+		 method: 'POST',
+		 headers: {
+			Authorization: 'Bearer ' + token,
+		 },
+		 body: JSON.stringify({
+			imc: imc
+		 })
+	  });
+	  let json = await response.json();
+	  return json.user;
+	} catch (error) {
+	  console.log(error);
+	  return null;
+	}
+ };
+ export const updateUserGoals = async (token, goals) => {
+	try {
+	  let response = await fetch(url + '/user/updateGoal', {
+		 method: 'POST',
+		 headers: {
+			Authorization: 'Bearer ' + token,
+		 },
+		 body: JSON.stringify({
+			goal: goals
+		 })
 	  });
 	  let json = await response.json();
 	  return json.user;
