@@ -12,9 +12,10 @@ export default StyleSheet.create({
         justifyContent: 'center',
     },
     containerHeader:{
-        flex: 1,
+        flex: 0,
+        height: 200,
         backgroundColor: '#C1ACA1',
-        padding: 20
+        padding: 15
     },
     containerBody:{
         flex: 0.8,
@@ -41,11 +42,20 @@ export default StyleSheet.create({
     input: {
         fontSize: 20,
         height: 28,
-        width: 70,
+        width: 60,
         margin: 3,
         paddingLeft: 10,
         paddingRight: 10,
         backgroundColor: '#F3F3F3',
         justifyContent: 'space-evenly',
-    }
+    },
+    button: {
+        alignItems: "center",
+        backgroundColor: "#FFFFFF",
+        width: 150,
+        height: 35,
+        padding: 10,
+        margin: 5,
+        borderRadius: 5
+      }
 });
