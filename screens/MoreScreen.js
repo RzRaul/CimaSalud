@@ -78,7 +78,7 @@ const More = ({navigation}) => {
     };
 
     return (
-        <View style = {styles.container}>
+        <View style = {{flex:1, backgroundColor: '#d4c9b9'}}>
             <ScrollView style = {{margin: 5, paddingTop:10}}>
                 <Calendar 
                     onDayPress={(date) => {
