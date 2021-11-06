@@ -1,4 +1,5 @@
 import React from "react";
+import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
@@ -39,7 +40,59 @@ const LogScreen = () =>(
 
 
 const TabsScreen = () =>(
-  <Tabs.Navigator>
+  <Tabs.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        if (route.name === 'Home') {
+          return (
+            <Ionicons
+              name={
+                focused
+                  ? 'home'
+                  : 'home-outline'
+              }
+              size={size}
+              color={color}
+            />
+          );
+        } else if (route.name === 'Food') {
+          return (
+            <Ionicons
+              name={focused ? 'nutrition' : 'nutrition-outline'}
+              size={size}
+              color={color}
+            />
+          );
+        } else if (route.name === 'Goals') {
+          return (
+            <Ionicons
+              name={focused ? 'golf' : 'golf-outline'}
+              size={size}
+              color={color}
+            />
+          );
+        } else if (route.name === 'Community') {
+          return (
+            <Ionicons
+              name={focused ? 'chatbox-ellipses' : 'chatbox-ellipses-outline'}
+              size={size}
+              color={color}
+            />
+          );
+        } else if (route.name === 'More') {
+          return (
+            <Ionicons
+              name={focused ? 'apps' : 'apps-outline'}
+              size={size}
+              color={color}
+            />
+          );
+        }
+      },
+      tabBarInactiveTintColor: 'gray',
+      tabBarActiveTintColor: 'black',
+    })}
+  >
     <Tabs.Screen name="Home" component={HomeScreen} />
     <Tabs.Screen name="Food" component={FoodScreen} />
     <Tabs.Screen name="Goals" component={GoalScreen} />

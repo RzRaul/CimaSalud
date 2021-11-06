@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { Button, Text, View, Image, TextInput, ScrollView } from 'react-native';
+import { ProgressChart } from "react-native-chart-kit";
 
 import { AuthContext } from '../utils/AuthContext';
 import * as DayFuncs from '../services/dayFetchs';
@@ -41,10 +43,10 @@ const Goals = ({navigation}) => {
     const [editing, setEditing] = useState(false);
     //const [nutrInfo, setNutrInfo] = useState( getNutrInfo( DayFuncs.getDayByDate( token, Date() ) ));
     const [items, setItems] = useState([
-        {text: 'Grasas', val: 10, meta: 0, id:0},
-        {text: 'Proteinas', val: 0, meta: 10, id:1},
-        {text: 'Calorias', val: 0, meta: 123, id:2},
-        {text: 'Carbohidratos', val: 0, meta: 0, id:3}
+        {text: 'Grasas', val: 150, meta: 100, id:0},
+        {text: 'Proteinas', val: 25, meta: 50, id:1},
+        {text: 'Calorias', val: 50, meta: 123, id:2},
+        {text: 'Carbohidratos', val: 75, meta: 200, id:3}
     ]);
     const MyInput = (props) => {
         return (
@@ -68,8 +70,29 @@ const Goals = ({navigation}) => {
                         <Text style = {styles.textBody}>{item.text}</Text>
                     </View>
                     <View style = {{padding: 10, flexDirection: 'row', justifyContent: 'space-around'}}>
-                        <Image source={require('../assets/icon.png')} style={{ width: 50, height: 50 }} />
-    
+                    <ProgressChart
+                            data={ {data: [item.val<item.meta ? item.val / item.meta : 1]} }
+                            width={175}
+                            height={75}
+                            strokeWidth={10}
+                            radius={25}
+                            chartConfig={{
+                                backgroundColor: "#9DD5D4",
+                                backgroundGradientFrom: "#9DD5D4",
+                                backgroundGradientTo: "#9DD5D4",
+                                color: (opacity = 1) => {
+                                    return (
+                                        item.val<item.meta?
+                                        `rgba(255, 255, 255, ${opacity})`:
+                                        `rgba(175, 10, 10, ${opacity})`
+                                    )
+                                },
+                                style: {
+                                  borderRadius: 10
+                                }
+                            }}
+                        />
+
                         <Text style = {styles.textBody}>{item.val} / {item.meta}</Text>
                         
                     </View>
@@ -99,7 +122,8 @@ const Goals = ({navigation}) => {
                 
                 <View style = {{flexDirection: "row", padding: 10, flex:1}}>
                     <View style = {{paddingRight: 15}}>
-                        <Image source={require('../assets/icon.png')} style={{ width: 100, height: 100 }} />
+                        <Ionicons name='fitness-outline' size={100} color='black' />
+                        
                     </View>
                     <View style = {{paddingRight: 15}}>
                         {items.map((item) => (<Text style={styles.textBody} key={item.id}>{item.text}</Text>))}
