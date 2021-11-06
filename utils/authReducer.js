@@ -6,7 +6,7 @@ export const loginReducer = (prevState, action)=>{
 		case 'get_token':
 			return {
 				...prevState,
-				userToken: action.token,
+				userToken: action.userToken,
 				isLoading: false
 			};
 		case 'login':
@@ -21,13 +21,16 @@ export const loginReducer = (prevState, action)=>{
 			return {
 				...prevState,
 				userToken: null,
+				userName: '',
+				userMail:'',
 				isLoading: false
 			};
 		case 'signup':
 			return {
 				...prevState,
-				userMail: action.mail,
-				userToken: action.token,
+				userMail: action.userMail,
+				userName: action.userName,
+				userToken: action.userToken,
 				isLoading: false
 			};
 		default:

@@ -32,8 +32,8 @@ const RootStackScreen = ({userToken})=>(
     </RootStack.Navigator>
 );
 const LogScreen = () =>(
-  <LogStack.Navigator>
-    <LogStack.Screen  name= "Login" component={LoginScreen}/>
+  <LogStack.Navigator screenOptions={{headerShown:false}}>
+    <LogStack.Screen  name= "Login" component={LoginScreen} />
     <LogStack.Screen  name= "SignUp" component={SignupScreen}/>
   </LogStack.Navigator>
 );
@@ -41,7 +41,7 @@ const LogScreen = () =>(
 
 const TabsScreen = () =>(
   <Tabs.Navigator
-    screenOptions={({ route }) => ({
+    screenOptions={{headerShown:false}, ({ route}) => ({
       tabBarIcon: ({ focused, color, size }) => {
         if (route.name === 'Home') {
           return (
@@ -93,45 +93,47 @@ const TabsScreen = () =>(
       tabBarActiveTintColor: 'black',
     })}
   >
+   <Tabs.Group
+    screenOptions={{headerShown:false}}
+  >
     <Tabs.Screen name="Home" component={HomeScreen} />
     <Tabs.Screen name="Food" component={FoodScreen} />
     <Tabs.Screen name="Goals" component={GoalScreen} />
     <Tabs.Screen name="Community" component={CommunityScreen} />
     <Tabs.Screen name="More" component={MoreScreen} />
+  </Tabs.Group>
   </Tabs.Navigator>
 );
 
 function App() {
-  //const [isLoading, setIsLoading] = React.useState(true); //Custom Splash
-  //const [userToken, setuserToken] = React.useState(null);
   const [loginState, dispatch] = React.useReducer(loginReducer,initialState);
-  //const [dataState, dispatch] = React.useReducer(loginReducer,initialState);
-
-  const globalContext = React.useMemo(()=>{
-    return {
-      signIn: (userMail,userPassword) => {
+  
+  const globalFuncs = React.useMemo(()=>({
+      signIn: async (userMail,userPassword) => {
       let userToken;
       let user;
       if(userMail && userPassword){
-       userToken = UserFuncs.login(userMail, userPassword);
-       user = UserFuncs.getUserInfo(userToken);
+       userToken =  await UserFuncs.login(userMail, userPassword);
+       user =  await UserFuncs.getUserInfo(userToken);
+       dispatch({type: 'login', userMail:user.email,userName: user.name, userToken});
       }
-      dispatch({type: 'login', userMail,userName: user.userName, userToken});
+      
       },
-      signOut: () => {
+      signOut: async () => {
         dispatch({type: 'logout'});
       },
-      signUp: (userName, userMail, userPassword) => {
-        let userToken= UserFuncs.signup(userMail,userPassword, userName);
-        user = UserFuncs.getUserInfo(userToken);
-        dispatch({type: 'signup', userMail: user.email, userName: user.name, token: usertoken})
+      signUp: async (userName, userMail, userPassword) => {
+        let userToken;
+        let user;
+        userToken= await UserFuncs.signup(userMail,userPassword, userName);
+        console.log('App token->'+userToken);
+        user = await UserFuncs.getUserInfo(userToken);
+        dispatch({type: 'signup', userMail, userName, userToken});
       },
       getState:()=>{
         return loginState;
       }
-      
-    };
-   }, []);
+   }), []);
   React.useEffect(()=>{
     setTimeout(()=>{
       //setIsLoading(false);
@@ -139,12 +141,14 @@ function App() {
     },1000);
   },[]);
 
+  const authContext = {loginState, globalFuncs};
+
   if(loginState.isLoading){
     return (<SplashScreen/>);
   }
   
   return (
-    <AuthContext.Provider value={globalContext}>
+    <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         <RootStackScreen userToken={loginState.userToken} />
       </NavigationContainer>

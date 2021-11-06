@@ -14,8 +14,10 @@ export const login = async (mail, pass) => {
 	  });
 	  let json = await response.json();
 	  return json.token;
+ 
+	  
 	} catch (error) {
-	  console.log(error);
+	  console.log('Rechazo de login->'+error);
 	  return null;
 	}
  };
@@ -24,6 +26,7 @@ export const login = async (mail, pass) => {
 	  let response = await fetch(url + '/signup', {
 		 method: 'POST',
 		 headers: {
+			'Access-Control-Allow-Origin': '*',
 			'Content-Type': 'application/json',
 		 },
 		 body: JSON.stringify({
@@ -33,9 +36,10 @@ export const login = async (mail, pass) => {
 		 }),
 	  });
 	  let json = await response.json();
+	  console.log('Serv token->'+json.token);
 	  return json.token;
 	} catch (error) {
-	  console.log(error);
+		console.log('Rechazo->'+error);
 	  return null;
 	}
  };
@@ -44,13 +48,14 @@ export const login = async (mail, pass) => {
 	  let response = await fetch(url + '/myinfo', {
 		 method: 'GET',
 		 headers: {
+			'Access-Control-Allow-Origin': '*',
 			Authorization: 'Bearer ' + token,
 		 },
 	  });
 	  let json = await response.json();
-	  return json.user;
+	  return json;
 	} catch (error) {
-	  console.log(error);
+		console.log('Rechazo->'+error);
 	  return null;
 	}
  };
@@ -59,6 +64,7 @@ export const login = async (mail, pass) => {
 	  let response = await fetch(url + '/user/update', {
 		 method: 'POST',
 		 headers: {
+			'Access-Control-Allow-Origin': '*',
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({
@@ -68,7 +74,7 @@ export const login = async (mail, pass) => {
 	  let json = await response.json();
 	  return json.user;
 	} catch (error) {
-	  console.log(error);
+		console.log('Rechazo->'+error);
 	  return null;
 	}
  };
@@ -77,6 +83,7 @@ export const login = async (mail, pass) => {
 	  let response = await fetch(url + '/user/updateIMC', {
 		 method: 'POST',
 		 headers: {
+			'Access-Control-Allow-Origin': '*',
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({
@@ -86,7 +93,7 @@ export const login = async (mail, pass) => {
 	  let json = await response.json();
 	  return json.user;
 	} catch (error) {
-	  console.log(error);
+		console.log('Rechazo->'+error);
 	  return null;
 	}
  };
@@ -95,6 +102,7 @@ export const login = async (mail, pass) => {
 	  let response = await fetch(url + '/user/updateGoal', {
 		 method: 'POST',
 		 headers: {
+			'Access-Control-Allow-Origin': '*',
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({

@@ -5,6 +5,10 @@ export const colors = {
     secondary :'#767676'
 }
 export default StyleSheet.create({
+    mainContainer:{
+        flex: 1, 
+        paddingTop:40
+    },
     container:{
         flex: 1,
         backgroundColor: '#d4c9b9',
@@ -48,6 +52,8 @@ export default StyleSheet.create({
         paddingRight: 10,
         backgroundColor: '#F3F3F3',
         justifyContent: 'space-evenly',
+        borderRadius: 10,
+        overflow:'hidden'
     },
     button: {
         alignItems: "center",

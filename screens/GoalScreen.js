@@ -102,7 +102,7 @@ const Goals = ({navigation}) => {
     };
     
     return (
-        <View style = {{flex: 1}}>
+        <View style = {styles.mainContainer}>
             <View style = {styles.containerHeader}>
                 <View style = {{flexDirection: "row", justifyContent: 'space-between'}}>
                     <View >

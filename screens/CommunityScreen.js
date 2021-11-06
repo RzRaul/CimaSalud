@@ -10,7 +10,7 @@ const Community = ({navigation}) => {
 
 
     return (
-        <View style = {styles.container}>
+        <View style = {styles.mainContainer, styles.container}>
             <Text>  This is welcome Screen </Text>
             <Button 
                 title='Cambiar pantalla'

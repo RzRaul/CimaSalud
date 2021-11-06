@@ -36,7 +36,7 @@ const Food = ({navigation}) => {
     }
 
     return (
-        <View style = {{flex: 1}}>
+        <View style = {styles.mainContainer}>
             <ScrollView>
                 <View style = {[styles.containerHeader, {height: 175, paddingTop: 5}]}>
                     <View style = {{flexDirection: "row", justifyContent: 'space-between'}}>

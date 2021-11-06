@@ -8,15 +8,9 @@ import * as DayFuncs from '../services/dayFetchs';
 import styles from '../styles/styles';
 
 const Home = ({navigation}) => {
-    // Get User token and if null login again
-    const {getState} = React.useContext(AuthContext);
-
-    const token = 1;
-    //const token = getState().userToken;
-    if(!token){
-        console.log('token is null');
-        navigation.navigate('Login')
-    }
+    // Token no puede ser null, o no entraría en esta pantalla
+    const {loginState, globalFuncs} = React.useContext(AuthContext);
+    //LoginState tiene el userToken, userName, userMail.
 
     const [userInfo, setUserInfo] = useState([
         {text: 'Grasas', val: 150, meta: 100, id:0},
@@ -76,6 +70,10 @@ const Home = ({navigation}) => {
         {text: 'Carbohidratos', val: 75, meta: 200, id:3}
     ]);
 
+    const logOutHandler = () =>{
+        globalFuncs.signOut();
+    }
+
     const ListItem = ({food}) => {
         return (
             <View style={{paddingTop: 15, backgroundColor: '#F3F3F3'}}>
@@ -95,11 +93,11 @@ const Home = ({navigation}) => {
     };
 
     return (
-        <View style = {{flex: 1}}>
+        <View style = {styles.mainContainer}>
             <ScrollView>
                 <View style = {styles.containerHeader}>
                     
-                    <Text style = {styles.textHeader}>Home</Text>
+                    <Text style = {styles.textHeader}>{`Bienvenido, ${loginState.userName}`}</Text>
                     
                     <View style = {{flexDirection: "row", flex:1, justifyContent:'space-between' }}>
                         <ProgressChart
@@ -150,7 +148,7 @@ const Home = ({navigation}) => {
                 <Button 
                     title='Cerrar sesión'
                     color = '#1779ba'
-                    onPress = {()=> signOut()}
+                    onPress = {logOutHandler}
                 />
             </ScrollView>
         </View>

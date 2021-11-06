@@ -1,53 +1,88 @@
 import React, { useState } from 'react';
-import { ImageBackground, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import styles from '../styles/styles';
 import { AuthContext } from '../utils/AuthContext';
 
 const SignupScreen= ({navigation})=>{
-	const {signIn} = React.useContext(AuthContext);
-    const {name, setName} = React.useState(null);
-	const {email, setEmail} = React.useState(null);
-    const {pass, setPass} = React.useState(null);
-    const {rePass, setRePass} = React.useState(null);
+	const {globalFuncs} = React.useContext(AuthContext);
+    const [data, setData] = React.useState({
+        name: '',
+        email:'',
+        pass:'',
+        rePass:''
+    });
+
+    const signUpHandler = ()=>{
+        if(data.name && data.email){
+            if(data.pass===data.rePass){
+                globalFuncs.signUp(data.name, data.email, data.pass);
+
+            }else{
+                console.log('Contraseñas no coinciden');
+            }
+        }else{
+            console.log('Campos inválidos');
+        }
+    }
 
     return (
-        <View style = {{
-            flex: 1,
-            backgroundColor: '#d4c9b9',
-            alignItems: 'center',
-            justifyContent: 'center',
-            }}>
-            <ImageBackground source={require('../assets/backgrounds/loginBkgdText.png')} resizeMode="cover" style={{flex: 1, width: 300, justifyContent:'flex-end', alignItems:'center', overlayColor: 'white'}}>
+        <View style = {myStyles.container}>
+        <ImageBackground source={require('../assets/backgrounds/loginBkgdText.png')} resizeMode="cover" style={myStyles.bgImage}>
+            <View style = {myStyles.content}>
                 <TextInput 
-                    style = {[styles.input, {width:200}]}
-                    placeholder="Enter name"
-                    onChangeText={setName}  
+                    style = {[styles.input, {width:250, height:35}]}
+                    placeholder="Nombre"
+                    onChangeText={(texto)=> setData({...data,name:texto})}  
                 />
                 <TextInput 
-                    style = {[styles.input, {width:200}]}
-                    placeholder="Enter e-mail"
-                    onChangeText={setEmail}  
+                    style = {[styles.input, {width:250, height:35}]}
+                    placeholder="Correo electrónico"
+                    onChangeText={(texto)=> setData({...data,email:texto})}  
                 />
                 <TextInput 
-                    style = {[styles.input, {width:200}]}
-                    placeholder="Enter password"
-                    onChangeText = {setPass}
+                    secureTextEntry = {true}
+                    style = {[styles.input, {width:250, height:35}]}
+                    placeholder="Contraseña"
+                    onChangeText = {(texto)=> setData({...data,pass:texto})}
                 />
                 <TextInput 
-                    style = {[styles.input, {width:200}]}
-                    placeholder="Confirm password"
-                    onChangeText = {setRePass}
+                    secureTextEntry = {true}
+                    style = {[styles.input, {width:250, height:35}]}
+                    placeholder="Confirma contraseña"
+                    onChangeText = {(texto)=> setData({...data,rePass:texto}) }
                 />
                 <TouchableOpacity
                     style={styles.button}
-                    onPress = {()=> signIn('asd', 'asd')}
+                    onPress = {signUpHandler}
                 >
-                    <Text>SIGN UP</Text>
+                    <Text>Crear cuenta</Text>
                 </TouchableOpacity>
+            </View>
             </ImageBackground>
             
         </View>
     )
 };
+
+const myStyles = StyleSheet.create({
+    container:{
+        flex: 1,
+        backgroundColor: '#d4c9b9',
+        justifyContent: 'center'
+    },
+    content:{
+        flex: 1,
+        backgroundColor: 'transparent',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        paddingBottom:60
+    },
+    bgImage:{
+        flex: 1, 
+        justifyContent:'flex-end', 
+        alignItems:'center'
+    },
+    
+});
 
 export default SignupScreen;
