@@ -17,7 +17,7 @@ const SignupScreen= ({navigation})=>{
             alignItems: 'center',
             justifyContent: 'center',
             }}>
-            <ImageBackground source={require('../assets/loginBackgroundW.png')} resizeMode="cover" style={{flex: 1, width: 300, justifyContent:'flex-end', alignItems:'center', overlayColor: 'white'}}>
+            <ImageBackground source={require('../assets/backgrounds/loginBkgdText.png')} resizeMode="cover" style={{flex: 1, width: 300, justifyContent:'flex-end', alignItems:'center', overlayColor: 'white'}}>
                 <TextInput 
                     style = {[styles.input, {width:200}]}
                     placeholder="Enter name"

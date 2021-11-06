@@ -15,7 +15,7 @@ const Login = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'center',
             }}>
-            <ImageBackground source={require('../assets/loginBackground.png')} resizeMode="cover" style={{flex: 1, width: 300, justifyContent:'flex-end', alignItems:'center'}}>
+            <ImageBackground source={require('../assets/backgrounds/loginBkgdText.png')} resizeMode="cover" style={{flex: 1, width: 300, justifyContent:'flex-end', alignItems:'center'}}>
                 <TextInput 
                     style = {[styles.input, {width:200}]}
                     placeholder="Enter e-mail"
