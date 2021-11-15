@@ -32,12 +32,6 @@ const Home = ({navigation}) => {
         cals:150,
         carbs:50
     }]);
-    try {
-        //setFoods(DayFuncs.getDayByDate(token,Date()));
-    } catch (error) {
-        console.log("Error at line 21: 'setFoods(DayFuncs.getDayByDate(token,Date()));'");
-        setFoods();
-    }
 
     const getNutrInfo = (day = DayFuncs.getDayByDate(token,Date())) => {
         let cals = proteinas = grasas = carbs = 0;
@@ -128,9 +122,7 @@ const Home = ({navigation}) => {
                         <View>
                             {userInfo.map((info) => {
                                 return (
-                                    <View style={{flexDirection: "row"}}>
                                         <Text style = {styles.textBody} key = {info.id}>{info.text}</Text>
-                                    </View>
                                 );
                             })}
                         </View>

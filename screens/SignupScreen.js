@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImageBackground, Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Alert, ImageBackground, Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import styles from '../styles/styles';
 import { AuthContext } from '../utils/AuthContext';
 
@@ -12,6 +12,12 @@ const SignupScreen= ({navigation})=>{
         rePass:''
     });
 
+    const createOneButtonAlert = (text) =>
+    Alert.alert(
+        text,
+        { text: "OK", onPress: () => console.log("OK Pressed") }
+    );
+
     const signUpHandler = ()=>{
         if(data.name && data.email){
             if(data.pass===data.rePass){
@@ -19,9 +25,11 @@ const SignupScreen= ({navigation})=>{
 
             }else{
                 console.log('Contraseñas no coinciden');
+                createOneButtonAlert('Contraseñas no coinciden');
             }
         }else{
             console.log('Campos inválidos');
+            createOneButtonAlert('Campos inválidos');
         }
     }
 

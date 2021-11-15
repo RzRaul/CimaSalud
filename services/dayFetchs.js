@@ -30,6 +30,7 @@ export const getMyDays = async (token) => {
 		 }),
 	  });
 	  let json = await response.json();
+	  console.log('getDayByDate Recibe '+ json);
 	  return json;
 	} catch (error) {
 	  console.log(error);
@@ -62,7 +63,7 @@ export const getMyDays = async (token) => {
 	  let response = await fetch(url + '/days', {
 		 method: 'POST',
 		 headers: {
-			'Access-Control-Allow-Origin': '*',
+			
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify(day)
@@ -80,7 +81,7 @@ export const getMyDays = async (token) => {
 	  let response = await fetch(url + '/days/updateBreakFast', {
 		 method: 'POST',
 		 headers: {
-			'Access-Control-Allow-Origin': '*',
+			
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({
@@ -101,7 +102,7 @@ export const getMyDays = async (token) => {
 	  let response = await fetch(url + '/days/updateLunch', {
 		 method: 'POST',
 		 headers: {
-			'Access-Control-Allow-Origin': '*',
+			
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({
@@ -122,7 +123,7 @@ export const getMyDays = async (token) => {
 	  let response = await fetch(url + '/days/updateDinner', {
 		 method: 'POST',
 		 headers: {
-			'Access-Control-Allow-Origin': '*',
+			
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({
@@ -143,7 +144,7 @@ export const getMyDays = async (token) => {
 	  let response = await fetch(url + '/days/updateSnacks', {
 		 method: 'POST',
 		 headers: {
-			'Access-Control-Allow-Origin': '*',
+			
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({

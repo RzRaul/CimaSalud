@@ -21,8 +21,10 @@
     "react-native-calendars": "^1.1268.0",
     "react-native-chart-kit": "^6.11.0",
     "react-native-safe-area-context": "3.2.0",
+    "react-native-scan-barcode": "^3.1.7",
     "react-native-screens": "~3.4.0",
-    "react-native-web": "~0.13.12"
+    "react-native-web": "~0.13.12",
+    "expo-barcode-scanner": "~10.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
