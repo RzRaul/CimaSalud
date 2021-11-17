@@ -1,16 +1,22 @@
 import React, { useEffect, useState} from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { Button, Text, View, Image, TextInput, ScrollView } from 'react-native';
+import { Alert, Button, Text, View, Image, TextInput, ScrollView } from 'react-native';
 import { ProgressChart } from "react-native-chart-kit";
 
 import { AuthContext } from '../utils/AuthContext';
 import * as DayFuncs from '../services/dayFetchs';
+import * as UserFuncs from '../services/userFetchs';
+import * as Dates from '../utils/Dates';
 import styles from '../styles/styles';
 
 const Home = ({navigation}) => {
-    // Token no puede ser null, o no entraría en esta pantalla
     const {loginState, globalFuncs} = React.useContext(AuthContext);
-    //LoginState tiene el userToken, userName, userMail.
+    const token = loginState.userToken;
+
+    const updateToday = async () => {
+        let dayTemp = await DayFuncs.getDayByDate(token, Dates.getToday());
+        setToday(dayTemp);
+    }
 
     const [userInfo, setUserInfo] = useState([
         {text: 'Grasas', val: 150, meta: 100, id:0},
@@ -18,33 +24,32 @@ const Home = ({navigation}) => {
         {text: 'Calorias', val: 50, meta: 123, id:2},
         {text: 'Carbohidratos', val: 75, meta: 200, id:3}
     ]);
-    
-    const [foods,setFoods] = useState([{
-        name:'pizza',
-        grasas:25,
-        proteinas:20,
-        cals:100,
-        carbs:30
-    },{
-        name:'hamburguesa',
-        grasas:30,
-        proteinas:25,
-        cals:150,
-        carbs:50
-    }]);
-    try {
-        //setFoods(DayFuncs.getDayByDate(token,Date()));
-    } catch (error) {
-        console.log("Error at line 21: 'setFoods(DayFuncs.getDayByDate(token,Date()));'");
-        setFoods();
-    }
 
-    const getNutrInfo = (day = DayFuncs.getDayByDate(token,Date())) => {
+    const [today, setToday] = useState(null);
+
+    React.useEffect(()=>{
+        console.log('running React.useEffect');
+        updateToday();
+        getNutrInfo();
+    },[]);
+
+    const getNutrInfo = async () => {
         let cals = proteinas = grasas = carbs = 0;
-        let foods = day.desayuno.concat(day.almuerzo,day.cena,day.snacks);
+        let foods = today? today.desayuno.concat(today.almuerzo,today.cena,today.snacks): undefined;
 
         // actualizar a la funcion para recibir las metas
-        let metas = UserFuncs.getUserInfo(token);
+        let metas = await UserFuncs.getUserInfo(token);
+
+        if(!today){
+            console.log('today is undefined');
+            setUserInfo([
+                {text: 'Calorias', val: 0, meta: metas.cals},
+                {text: 'Grasas', val: 0, meta: metas.grasas},
+                {text: 'Proteinas', val: 0, meta: metas.proteinas},
+                {text: 'Carbohidratos', val: 0, meta: metas.carbs}
+            ]);
+            return ;
+        }
 
         for(const food of foods){
             cals += food.cals;
@@ -53,22 +58,14 @@ const Home = ({navigation}) => {
             carbs += food.carbs;
         }
 
-        // si se cambia el retorno entonces se va a tener que hacer varios cambios al codigo
-        return [
+        setUserInfo([
             {text: 'Calorias', val: cals, meta: metas.cals},
             {text: 'Grasas', val: grasas, meta: metas.grasas},
             {text: 'Proteinas', val: proteinas, meta: metas.proteinas},
             {text: 'Carbohidratos', val: carbs, meta: metas.carbs}
-        ];
+        ]);
+        return ;
     }
-
-    //const [nutrInfo, setNutrInfo] = useState( getNutrInfo( DayFuncs.getDayByDate( token, Date() ) ));
-    const [items, setItems] = useState([
-        {text: 'Calorias', val: 50, meta: 123, id:2},
-        {text: 'Grasas', val: 150, meta: 100, id:0},
-        {text: 'Proteinas', val: 25, meta: 50, id:1},
-        {text: 'Carbohidratos', val: 75, meta: 200, id:3}
-    ]);
 
     const logOutHandler = () =>{
         globalFuncs.signOut();
@@ -92,6 +89,33 @@ const Home = ({navigation}) => {
         );
     };
 
+    const TitleWithBody = ({obj}) => {
+        return (
+            <View style={[styles.containerBody,{backgroundColor: '#d4c9b9'}]} margin={5} padding={10}>
+                <Text style={{fontSize: 25, fontWeight: 'bold'}}>{ obj.title }</Text>
+                { obj.body !== undefined || obj.body.length != 0 ? 
+                    obj.body.map( (food,i) => (<ListItem food={food} key={i}/>) ):
+                    <Text>No Hay Datos</Text>
+                }
+            </View>
+        );
+    }
+
+    const DayFoods = () => {
+        let desayuno = today? today.desayuno : [];
+        let almuerzo = today? today.desayuno : [];
+        let cena = today? today.desayuno : [];
+        let snacks = today? today.desayuno : [];
+        return (
+            <View>
+                <TitleWithBody obj={{title:'Desayuno', body:desayuno}} />
+                <TitleWithBody obj={{title:'Almuerzo', body:almuerzo}} />
+                <TitleWithBody obj={{title:'Cena', body:cena}} />
+                <TitleWithBody obj={{title:'Snacks', body:snacks}} />
+            </View>
+        );
+    }
+
     return (
         <View style = {styles.mainContainer}>
             <ScrollView>
@@ -102,8 +126,8 @@ const Home = ({navigation}) => {
                     <View style = {{flexDirection: "row", flex:1, justifyContent:'space-between' }}>
                         <ProgressChart
                             data={ {
-                                labels: items.map(item => item.text), 
-                                data: items.map(item => item.val<item.meta ? item.val / item.meta : 1)
+                                labels: userInfo.map(item => item.text), 
+                                data: userInfo.map(item => item.val<item.meta ? item.val / item.meta : 1)
                             } }
                             width={150}
                             height={150}
@@ -126,25 +150,15 @@ const Home = ({navigation}) => {
                             }}
                         />
                         <View>
-                            {userInfo.map((info) => {
-                                return (
-                                    <View style={{flexDirection: "row"}}>
-                                        <Text style = {styles.textBody} key = {info.id}>{info.text}</Text>
-                                    </View>
-                                );
-                            })}
+                            {userInfo.map((info, i) => <Text style = {styles.textBody} key = {i}>{info.text}</Text>)}
                         </View>
                         <View>
-                            {userInfo.map((info, opacity = 1, color = 255) => <Text style = {styles.textBody} key = {info.id}>{info.val} g</Text>)}
+                            {userInfo.map((info,i) => <Text style = {styles.textBody} key = {i}>{info.val} g</Text>)}
                         </View>
                     </View>
                 </View>
 
-                <View style = {{flex: 1}}>
-                    <View>
-                        {foods.map((food,i) => (<ListItem food={food} key={i}/>))}
-                    </View>
-                </View>
+                <DayFoods />
                 <Button 
                     title='Cerrar sesión'
                     color = '#1779ba'

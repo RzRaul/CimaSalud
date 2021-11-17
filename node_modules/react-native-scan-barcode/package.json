@@ -1,0 +1,21 @@
+{
+  "keywords": [
+    "react",
+    "react-native",
+    "react-component",
+    "android",
+    "scan-barcode",
+    "barcode",
+    "qrcode",
+    "scanner",
+    "barcodereader"
+  ],
+  "license": "MIT",
+  "main": "scan-barcode.js",
+  "name": "react-native-scan-barcode",
+  "repository": {
+   "type": "git",
+    "url": "https://github.com/safaeean/react-native-scan-barcode.git"
+  },
+  "version": "3.1.7"
+}

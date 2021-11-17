@@ -5,20 +5,17 @@ import { ProgressChart } from "react-native-chart-kit";
 
 import { AuthContext } from '../utils/AuthContext';
 import * as DayFuncs from '../services/dayFetchs';
+import * as UserFuncs from '../services/userFetchs';
+import * as Dates from '../utils/Dates';
 import styles from '../styles/styles';
 
 const Goals = ({navigation}) => {
-    // Get User token and if null login again
-    const {getState} = React.useContext(AuthContext);
+    const {loginState} = React.useContext(AuthContext);
+    const token = loginState.userToken;
 
-    const token = 1;
-    //const token = getState().userToken;
-    if(!token){
-        console.log('token is null');
-        navigation.navigate('Login')
-    }
+    const [day,setDay] = useState(null);
 
-    const getNutrInfo = (day) => {
+    const getNutrInfo = () => {
         let cals = proteinas = grasas = carbs = 0;
         let foods = day.desayuno.concat(day.almuerzo,day.cena,day.snacks);
 
@@ -33,21 +30,30 @@ const Goals = ({navigation}) => {
         }
 
         // si se cambia el retorno entonces se va a tener que hacer varios cambios al codigo
-        return [
+        setNutrInfo([
             {text: 'Calorias', val: cals, meta: metas.cals},
             {text: 'Grasas', val: grasas, meta: metas.grasas},
             {text: 'Proteinas', val: proteinas, meta: metas.proteinas},
             {text: 'Carbohidratos', val: carbs, meta: metas.carbs}
-        ];
+        ]);
     }
+
     const [editing, setEditing] = useState(false);
-    //const [nutrInfo, setNutrInfo] = useState( getNutrInfo( DayFuncs.getDayByDate( token, Date() ) ));
-    const [items, setItems] = useState([
+
+    const [nutrInfo, setNutrInfo] = useState([
         {text: 'Grasas', val: 150, meta: 100, id:0},
         {text: 'Proteinas', val: 25, meta: 50, id:1},
         {text: 'Calorias', val: 50, meta: 123, id:2},
         {text: 'Carbohidratos', val: 75, meta: 200, id:3}
     ]);
+    React.useEffect(()=>{
+        async () => {
+            let dayTemp = await DayFuncs.getDayByDate(token, Dates.getToday());
+            setDay(dayTemp);
+        }
+        getNutrInfo();
+    },[]);
+
     const MyInput = (props) => {
         return (
             <TextInput 
@@ -57,11 +63,12 @@ const Goals = ({navigation}) => {
                 // cuando se tenga la funcion para actualizar las metas en la base de datos cambiarla
                 onChangeText={input => {
                     if(!isNaN(Number(input) && input!== undefined))
-                        items[props.index].meta = Number(input);
+                        nutrInfo[props.index].meta = Number(input);
                 }}  
             />
         );
     }
+
     const ListItem = ({item}) => {
         return (
             <View style={{paddingTop: 15, backgroundColor: '#F3F3F3'}}>
@@ -113,6 +120,9 @@ const Goals = ({navigation}) => {
                             title= {editing? 'Guardar':'Editar'}
                             color = '#1779ba'
                             onPress = {() => {
+                                if(editing){
+                                    UserFuncs.updateUserGoals(token, nutrInfo);
+                                }
                                 setEditing(!editing);
                             }}
                         />
@@ -126,19 +136,19 @@ const Goals = ({navigation}) => {
                         
                     </View>
                     <View style = {{paddingRight: 15}}>
-                        {items.map((item) => (<Text style={styles.textBody} key={item.id}>{item.text}</Text>))}
+                        {nutrInfo.map((item) => (<Text style={styles.textBody} key={item.id}>{item.text}</Text>))}
                     </View>
                     <View>
                         {editing? 
-                            items.map((item) => (<MyInput item={item} key={item.id} index={item.id} />)):
-                            items.map((item) => <Text style={styles.textBody} key={item.id}>{item.meta.toString()} g</Text>)}
+                            nutrInfo.map((item) => (<MyInput item={item} key={item.id} index={item.id} />)):
+                            nutrInfo.map((item) => <Text style={styles.textBody} key={item.id}>{item.meta.toString()} g</Text>)}
                     </View>
                 </View>
             </View>
 
             <View style = {{flex: 1}}>
                 <ScrollView>
-                    {items.map((item) => <ListItem item={item} key={item.id}/>)}
+                    {nutrInfo.map((item) => <ListItem item={item} key={item.id}/>)}
                 </ScrollView>
             </View>
             
