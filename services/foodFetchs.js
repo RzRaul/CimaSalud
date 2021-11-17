@@ -38,14 +38,11 @@ export const getFoodByName = async (token, name) => {
 };
 export const getFoodByCals = async (token, calNum) => {
   try {
-    let response = await fetch(url + '/food', {
+    let response = await fetch(url + '/food/cals/'+calNum, {
       method: 'GET',
       headers: {
         Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify({
-        cals: calNum,
-      }),
+      }
     });
     let json = await response.json();
     return json;
@@ -56,14 +53,11 @@ export const getFoodByCals = async (token, calNum) => {
 };
 export const getFoodByType = async (token, typeName) => {
   try {
-    let response = await fetch(url + '/food', {
+    let response = await fetch(url + '/food/type/'+typeName, {
       method: 'GET',
       headers: {
         Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify({
-        type: typeName,
-      }),
+      }
     });
     let json = await response.json();
     return json;
