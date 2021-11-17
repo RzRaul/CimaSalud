@@ -122,10 +122,10 @@ function App() {
       signOut: async () => {
         dispatch({type: 'logout'});
       },
-      signUp: async (userName, userMail, userPassword) => {
+      signUp: async (userName, userMail, userPassword, metas) => {
         let userToken;
         let user;
-        userToken= await UserFuncs.signup(userMail,userPassword, userName);
+        userToken= await UserFuncs.signup(userMail,userPassword, userName, metas);
         console.log('App token->'+userToken);
         user = await UserFuncs.getUserInfo(userToken);
         dispatch({type: 'signup', userMail, userName, userToken});
