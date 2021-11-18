@@ -31,7 +31,6 @@ const Food = ({navigation}) => {
     }
 
     const [hasPermission, setHasPermission] = useState(null);
-    const [scanned, setScanned] = useState(false);
     const [isScanning, setIsScanning] = useState(false);
 
     useEffect(() => {
@@ -40,22 +39,6 @@ const Food = ({navigation}) => {
         setHasPermission(status === 'granted');
         })();
     }, []);
-
-    const createTwoButtonAlert = (text) =>
-    Alert.alert(
-      text,
-      'Es correcto?',
-      [
-        {
-          text: "Retomar",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { 
-            text: "Si", 
-            onPress: () => setIsScanning(false) }
-      ]
-    );
 
     const createAlert = (text, text2, buttons) =>
     Alert.alert(
@@ -67,23 +50,11 @@ const Food = ({navigation}) => {
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
         console.log(`Bar code with type ${type} and data ${data} has been scanned!`);
-        getFoodByCode(token, data);
-
         // Falta peticion a la base de datos
-        setIsScanning(false)
-        /* Data = a el numero debajo del codigo de barras, el usuario no creo que lo verificaria
-        createAlert(`Bar code with type ${type} and data ${data} has been scanned!`,'Es Correcto?',[
-            {
-              text: "Retomar",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel"
-            },
-            { 
-                text: "Si", 
-                onPress: () => setIsScanning(false) }
-          ]);*/
-    };
+        //getFoodByCode(token, data.toString());
 
+        setIsScanning(false)
+    };
 
     return (
         <View style = {{flex : 1}}>
@@ -209,7 +180,7 @@ const Food = ({navigation}) => {
                 </View> : 
                 <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                     <BarCodeScanner
-                        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                        onBarCodeScanned={handleBarCodeScanned}
                         style={StyleSheet.absoluteFillObject}
                     />
                     <TouchableOpacity

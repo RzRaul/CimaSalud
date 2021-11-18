@@ -5,13 +5,13 @@ import { ProgressChart } from "react-native-chart-kit";
 
 import { AuthContext } from '../utils/AuthContext';
 import * as DayFuncs from '../services/dayFetchs';
-import * as UserFuncs from '../services/userFetchs';
 import * as Dates from '../utils/Dates';
 import styles from '../styles/styles';
 
 const Home = ({navigation}) => {
     const {loginState, globalFuncs} = React.useContext(AuthContext);
     const token = loginState.userToken;
+    const metas = loginState.metas;
 
     const [today, setToday] = useState(null);
     const [userInfo, setUserInfo] = useState([
@@ -20,28 +20,22 @@ const Home = ({navigation}) => {
         {text: 'Carbohidratos', val: 0, meta: 0},
         {text: 'Grasas', val: 0, meta: 0},
     ]);
-    const [isFetched, setIsFetched] = useState(false);
 
-    const updateToday = async () => {
-        let dayTemp = await DayFuncs.getDayByDate(loginState.userToken, Dates.getToday());
-        setToday(dayTemp);
-    }
-
-    const getNutrInfo = async () => {
+    const getInfo = async () => {
+        let dayTemp = await DayFuncs.getDayByDate(token, Dates.getToday());
         let cals = proteinas = grasas = carbs = 0;
-        let foods = today? today.desayuno.concat(today.almuerzo,today.cena,today.snacks): [];
+        setToday(dayTemp);
 
-        let {meta} = await UserFuncs.getUserInfo(token);
+        let foods = dayTemp? dayTemp.desayuno.concat(dayTemp.almuerzo,dayTemp.cena,dayTemp.snacks): [];
 
-        if(!today){
-            console.log('today is undefined');
+        if(foods == 0){
+            console.log('foods is [] in getNutInfo');
             setUserInfo([
-                {text: 'Calorias', val: 0, meta: meta.cals? meta.cals:1},
-                {text: 'Proteinas', val: 0, meta: meta.proteinas? meta.proteinas:1},
-                {text: 'Carbohidratos', val: 0, meta: meta.carbs? meta.carbs:1},
-                {text: 'Grasas', val: 0, meta: meta.grasas? meta.grasas:1},
+                {text: 'Calorias', val: 0, meta: metas.cals},
+                {text: 'Proteinas', val: 0, meta: metas.proteinas},
+                {text: 'Carbohidratos', val: 0, meta: metas.carbs},
+                {text: 'Grasas', val: 0, meta: metas.grasas},
             ]);
-            if(!isFetched) setIsFetched(true);
             return ;
         }
 
@@ -53,10 +47,10 @@ const Home = ({navigation}) => {
         }
 
         setUserInfo([
-            {text: 'Calorias', val: cals, meta: meta.cals},
-            {text: 'Proteinas', val: proteinas, meta: meta.proteinas},
-            {text: 'Carbohidratos', val: carbs, meta: meta.carbs},
-            {text: 'Grasas', val: grasas, meta: meta.grasas},
+            {text: 'Calorias', val: cals, meta: metas.cals},
+            {text: 'Proteinas', val: proteinas, meta: metas.proteinas},
+            {text: 'Carbohidratos', val: carbs, meta: metas.carbs},
+            {text: 'Grasas', val: grasas, meta: metas.grasas},
 
         ]);
         return ;
@@ -64,9 +58,8 @@ const Home = ({navigation}) => {
 
     React.useEffect(()=>{
         console.log('running React.useEffect');
-        updateToday();
-        getNutrInfo();
-    },[isFetched]);
+        getInfo();
+    },[]);
 
     const logOutHandler = () =>{
         globalFuncs.signOut();
