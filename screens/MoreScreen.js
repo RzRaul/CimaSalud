@@ -11,11 +11,10 @@ const More = ({navigation}) => {
     const {loginState} = React.useContext(AuthContext);
     const token = loginState.userToken;
     
-    
 
     const updateDay = async (date) => {
         let dayTemp = await DayFuncs.getDayByDate(token, date);
-        console.log('updateDay = ',dayTemp);
+        console.log('date = '+date+' updateDay = '+dayTemp);
         setDay(dayTemp);
     }
     
@@ -23,8 +22,9 @@ const More = ({navigation}) => {
         let days = await DayFuncs.getMyDays(token);
         let dates = {};
 
-        days.forEach((day) => {dates[day.fecha.replace("T00:00:00.000Z", "")] = {marked:true} });
-        setMarkedDates(dates);
+
+        if(days)
+            days.forEach((day) => {dates[day.fecha.replace("T00:00:00.000Z", "")] = {marked:true} });
     }
 
     const [day, setDay] = useState(null);
@@ -67,8 +67,6 @@ const More = ({navigation}) => {
             </View>
         );
     };
-
-    // Check if both are passing corretly
     const TitleWithBody = ({obj}) => {
         return (
             <View style={[styles.containerBody,{backgroundColor: '#d4c9b9'}]} margin={5} padding={10}>
