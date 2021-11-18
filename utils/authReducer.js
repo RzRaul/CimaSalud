@@ -1,4 +1,5 @@
 import React from "react";
+import { ActionSheetIOS } from "react-native";
 
 
 export const loginReducer = (prevState, action)=>{
@@ -15,6 +16,7 @@ export const loginReducer = (prevState, action)=>{
 				userMail: action.userMail,
 				userName: action.userName,
 				userToken: action.userToken,
+				metas: action.metas,
 				isLoading: false
 			};
 		case 'logout':
@@ -23,6 +25,7 @@ export const loginReducer = (prevState, action)=>{
 				userToken: null,
 				userName: '',
 				userMail:'',
+				metas: null,
 				isLoading: false
 			};
 		case 'signup':
@@ -31,8 +34,14 @@ export const loginReducer = (prevState, action)=>{
 				userMail: action.userMail,
 				userName: action.userName,
 				userToken: action.userToken,
+				metas: action.metas,
 				isLoading: false
 			};
+		case 'updateMetas':
+				return {
+					...prevState,
+					metas: action.metas
+				};
 		default:
 			break;
 	}
@@ -42,6 +51,7 @@ export const initialState = {
 	userName: '',
 	userMail:'',
 	userToken: null,
-	isLoading: true
+	isLoading: true,
+	metas:null
 }
 

@@ -110,13 +110,13 @@ function App() {
   
   const globalFuncs = React.useMemo(()=>({
       signIn: async (userMail,userPassword) => {
-      let userToken;
-      let user;
-      if(userMail && userPassword){
-       userToken =  await UserFuncs.login(userMail, userPassword);
-       user =  await UserFuncs.getUserInfo(userToken);
-       dispatch({type: 'login', userMail:user.email,userName: user.name, userToken});
-      }
+        let userToken;
+        let user;
+        if(userMail && userPassword){
+            userToken =  await UserFuncs.login(userMail, userPassword);
+            user =  await UserFuncs.getUserInfo(userToken);
+            dispatch({type: 'login', userMail:user.email,userName: user.name, userToken, metas:user.meta});
+        }
       
       },
       signOut: async () => {
@@ -126,9 +126,12 @@ function App() {
         let userToken;
         let user;
         userToken= await UserFuncs.signup(userMail,userPassword, userName, metas);
-        console.log('App token->'+userToken);
         user = await UserFuncs.getUserInfo(userToken);
-        dispatch({type: 'signup', userMail, userName, userToken});
+        dispatch({type: 'signup', userMail, userName, userToken, metas});
+      },
+      updateGoals: async (metas) => {
+        let goals = await UserFuncs.updateUserGoals(loginState.usertoken, metas);
+        dispatch({type: 'updateMetas', metas:goals});
       },
       getState:()=>{
         return loginState;

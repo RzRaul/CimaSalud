@@ -37,7 +37,6 @@ export const login = async (mail, pass) => {
 		 }),
 	  });
 	  let json = await response.json();
-	  console.log('Serv token->'+json.token);
 	  return json.token;
 	} catch (error) {
 		console.log('Rechazo->'+error);
@@ -51,7 +50,7 @@ export const login = async (mail, pass) => {
 		 headers: {
 			'Access-Control-Allow-Origin': '*',
 			Authorization: 'Bearer ' + token,
-		 },
+		 }
 	  });
 	  let json = await response.json();
 	  return json;
@@ -64,7 +63,10 @@ export const login = async (mail, pass) => {
 	try {
 	  let response = await fetch(url + '/user/update', {
 		 method: 'POST',
-		 headers: {
+		 mode: "cors", // or without this line
+    	redirect: 'follow',
+    	headers: {
+        'content-type': 'application/json',
 			'Access-Control-Allow-Origin': '*',
 			Authorization: 'Bearer ' + token,
 		 },
@@ -83,7 +85,10 @@ export const login = async (mail, pass) => {
 	try {
 	  let response = await fetch(url + '/user/updateIMC', {
 		 method: 'POST',
-		 headers: {
+		 mode: "cors", // or without this line
+    	redirect: 'follow',
+    	headers: {
+        'content-type': 'application/json',
 			'Access-Control-Allow-Origin': '*',
 			Authorization: 'Bearer ' + token,
 		 },
@@ -99,10 +104,14 @@ export const login = async (mail, pass) => {
 	}
  };
  export const updateUserGoals = async (token, goals) => {
+	 
 	try {
 	  let response = await fetch(url + '/user/updateGoal', {
-		 method: 'POST',
-		 headers: {
+		method: 'POST',
+		mode: "cors", // or without this line
+    	redirect: 'follow',
+    	headers: {
+        'content-type': 'application/json',
 			'Access-Control-Allow-Origin': '*',
 			Authorization: 'Bearer ' + token,
 		 },
@@ -110,6 +119,7 @@ export const login = async (mail, pass) => {
 			goal: goals
 		 })
 	  });
+	  
 	  let json = await response.json();
 	  return json.user;
 	} catch (error) {

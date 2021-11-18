@@ -7,7 +7,7 @@ export const getMyDays = async (token) => {
 		 headers: {
 			'Access-Control-Allow-Origin': '*',
 			Authorization: 'Bearer ' + token,
-		 },
+		 }
 	  });
 	  let json = await response.json();
 	  return json;
@@ -19,56 +19,12 @@ export const getMyDays = async (token) => {
 
  export const getDayByDate = async (token, fecha) => {
 	try {
-	  let response = await fetch(url + '/days/date', {
+	  let response = await fetch(url + '/days/date/'+fecha, {
 		 method: 'GET',
 		 headers: {
 			'Access-Control-Allow-Origin': '*',
 			Authorization: 'Bearer ' + token,
-		 },
-		 body: JSON.stringify({
-			date: fecha,
-		 }),
-	  });
-	  let json = await response.json();
-	  console.log('getDayByDate Recibe '+ json);
-	  return json;
-	} catch (error) {
-	  console.log(error);
-	  return null;
-	}
- };
- export const getDayByRange = async (token, StartDate, EndDate) => {
-	try {
-	  let response = await fetch(url + '/days/dateRange', {
-		 method: 'GET',
-		 headers: {
-			'Access-Control-Allow-Origin': '*',
-			Authorization: 'Bearer ' + token,
-		 },
-		 body: JSON.stringify({
-			StartDate: StartDate,
-			EndDate: EndDate
-		 }),
-	  });
-	  let json = await response.json();
-	  return json;
-	} catch (error) {
-	  console.log(error);
-	  return null;
-	}
- };
- export const getDayByRange = async (token, StartDate, EndDate) => {
-	try {
-	  let response = await fetch(url + '/days/dateRange', {
-		 method: 'GET',
-		 headers: {
-			'Access-Control-Allow-Origin': '*',
-			Authorization: 'Bearer ' + token,
-		 },
-		 body: JSON.stringify({
-			StartDate: StartDate,
-			EndDate: EndDate
-		 }),
+		 }
 	  });
 	  let json = await response.json();
 	  return json;
@@ -82,8 +38,10 @@ export const getMyDays = async (token) => {
 	try {
 	  let response = await fetch(url + '/days', {
 		 method: 'POST',
-		 headers: {
-			
+		 mode: "cors", // or without this line
+    	redirect: 'follow',
+    	headers: {
+        'content-type': 'application/json',
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify(day)
@@ -100,7 +58,10 @@ export const getMyDays = async (token) => {
 	try {
 	  let response = await fetch(url + '/days/updateBreakFast', {
 		 method: 'POST',
-		 headers: {
+		 mode: "cors", // or without this line
+    	redirect: 'follow',
+    	headers: {
+        'content-type': 'application/json',
 			
 			Authorization: 'Bearer ' + token,
 		 },
@@ -121,8 +82,11 @@ export const getMyDays = async (token) => {
 	try {
 	  let response = await fetch(url + '/days/updateLunch', {
 		 method: 'POST',
-		 headers: {
-			
+		 mode: "cors", // or without this line
+    	redirect: 'follow',
+    	headers: {
+        'content-type': 'application/json',
+			'Access-Control-Allow-Origin': '*',
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({
@@ -142,7 +106,10 @@ export const getMyDays = async (token) => {
 	try {
 	  let response = await fetch(url + '/days/updateDinner', {
 		 method: 'POST',
-		 headers: {
+		 mode: "cors", // or without this line
+    	redirect: 'follow',
+    	headers: {
+        'content-type': 'application/json',
 			
 			Authorization: 'Bearer ' + token,
 		 },
@@ -163,8 +130,10 @@ export const getMyDays = async (token) => {
 	try {
 	  let response = await fetch(url + '/days/updateSnacks', {
 		 method: 'POST',
-		 headers: {
-			
+		 mode: "cors", // or without this line
+    	redirect: 'follow',
+    	headers: {
+        'content-type': 'application/json',
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({

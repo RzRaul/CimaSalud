@@ -10,8 +10,10 @@ import * as Dates from '../utils/Dates';
 import styles from '../styles/styles';
 
 const Goals = ({navigation}) => {
-    const {loginState} = React.useContext(AuthContext);
+    const {loginState, globalFuncs} = React.useContext(AuthContext);
     const token = loginState.userToken;
+    const metas = loginState.metas;
+    console.log(JSON.stringify(metas));
     const [editing, setEditing] = useState(false);
 
     const [today, setToday] = useState(null);
@@ -34,16 +36,16 @@ const Goals = ({navigation}) => {
         setToday(dayTemp);
     }
 
-    const getNutrInfo = async () => {
+    const getNutrInfo = () => {
         let cals = proteinas = grasas = carbs = 0;
         let foods = today? today.desayuno.concat(today.almuerzo,today.cena,today.snacks): [];
 
-        let {meta} = await UserFuncs.getUserInfo(token);
-        delete meta._id;
+        let meta = metas;
+        console.log('Meta es:'+meta); //debug
         setGoals(meta);
 
         if(!today){
-            console.log('today is undefined');
+            //console.log('today is undefined');
             setUserInfo([
                 {text: 'Calorias', val: 0, meta: meta.cals? meta.cals:1},
                 {text: 'Proteinas', val: 0, meta: meta.proteinas? meta.proteinas:1},
@@ -70,7 +72,7 @@ const Goals = ({navigation}) => {
     }
     
     React.useEffect(()=>{
-        console.log('GoalScreen running React.useEffect');
+        //console.log('GoalScreen running React.useEffect');
         updateToday();
         getNutrInfo();
     },[isFetched]);
@@ -177,10 +179,10 @@ const Goals = ({navigation}) => {
         );
     };
     
-    const editHandler = async () => {
+    const editHandler = () => {
         if(editing){
             console.log('UserFuncs.updateUserGoals(token, goals); goals = ',goals);
-            UserFuncs.updateUserGoals(token, goals);
+            globalFuncs.updateGoals(metas);
             setIsFetched(!isFetched);
         }
         setEditing(!editing);

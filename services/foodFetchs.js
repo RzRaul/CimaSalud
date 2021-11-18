@@ -83,7 +83,10 @@ export const updateFoodByName = async (token, newFood) => {
   try {
     let response = await fetch(url + '/food/update', {
       method: 'POST',
-      headers: {
+      mode: "cors", // or without this line
+    	redirect: 'follow',
+    	headers: {
+        'content-type': 'application/json',
         Authorization: 'Bearer ' + token,
       },
 		body: JSON.stringify({
@@ -104,7 +107,10 @@ export const deleteFoodByName = async (token, newFood) => {
 	try {
 	  let response = await fetch(url + '/food/delete', {
 		 method: 'POST',
-		 headers: {
+		 mode: "cors", // or without this line
+    	redirect: 'follow',
+    	headers: {
+        'content-type': 'application/json',
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({
