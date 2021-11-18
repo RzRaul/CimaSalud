@@ -68,6 +68,7 @@ const Food = ({navigation}) => {
         setScanned(true);
         console.log(`Bar code with type ${type} and data ${data} has been scanned!`);
         getFoodByCode(token, data);
+
         // Falta peticion a la base de datos
         setIsScanning(false)
         /* Data = a el numero debajo del codigo de barras, el usuario no creo que lo verificaria

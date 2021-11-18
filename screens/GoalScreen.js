@@ -12,7 +12,6 @@ import styles from '../styles/styles';
 const Goals = ({navigation}) => {
     const {loginState} = React.useContext(AuthContext);
     const token = loginState.userToken;
-
     const [editing, setEditing] = useState(false);
 
     const [today, setToday] = useState(null);
@@ -61,7 +60,6 @@ const Goals = ({navigation}) => {
             grasas += food.grasas;
             carbs += food.carbs;
         }
-
         setUserInfo([
             {text: 'Calorias', val: cals, meta: meta.cals},
             {text: 'Proteinas', val: proteinas, meta: meta.proteins},
@@ -216,6 +214,7 @@ const Goals = ({navigation}) => {
             <View style = {{flex: 1}}>
                 <ScrollView>
                     {userInfo.map((item,i) => <ListItem item={item} key={i}/>)}
+
                 </ScrollView>
             </View>
             

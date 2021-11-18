@@ -57,6 +57,7 @@ const Home = ({navigation}) => {
             {text: 'Proteinas', val: proteinas, meta: meta.proteinas},
             {text: 'Carbohidratos', val: carbs, meta: meta.carbs},
             {text: 'Grasas', val: grasas, meta: meta.grasas},
+
         ]);
         return ;
     }
@@ -102,6 +103,7 @@ const Home = ({navigation}) => {
     }
 
     const DayFoods = () => {
+
         return (
             <View>
                 <TitleWithBody obj={{title:'Desayuno', body: today? today.desayuno : []}} />
