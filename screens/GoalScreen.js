@@ -13,14 +13,47 @@ const Goals = ({navigation}) => {
     const {loginState} = React.useContext(AuthContext);
     const token = loginState.userToken;
 
-    const [day,setDay] = useState(null);
+    const [editing, setEditing] = useState(false);
 
-    const getNutrInfo = () => {
+    const [today, setToday] = useState(null);
+    const [userInfo, setUserInfo] = useState([
+        {text: 'Calorias', val: 0, meta: 0},
+        {text: 'Proteinas', val: 0, meta: 0},
+        {text: 'Carbohidratos', val: 0, meta: 0},
+        {text: 'Grasas', val: 0, meta: 0}
+    ]);
+    const [goals, setGoals] = useState({
+        cals: 0,
+        proteins: 0,
+        carbs: 0,
+        grasas: 0,
+    });
+    const [isFetched, setIsFetched] = useState(false);
+
+    const updateToday = async () => {
+        let dayTemp = await DayFuncs.getDayByDate(token, Dates.getToday());
+        setToday(dayTemp);
+    }
+
+    const getNutrInfo = async () => {
         let cals = proteinas = grasas = carbs = 0;
-        let foods = day.desayuno.concat(day.almuerzo,day.cena,day.snacks);
+        let foods = today? today.desayuno.concat(today.almuerzo,today.cena,today.snacks): [];
 
-        // actualizar a la funcion para recibir las metas
-        let metas = UserFuncs.getUserInfo(token);
+        let {meta} = await UserFuncs.getUserInfo(token);
+        delete meta._id;
+        setGoals(meta);
+
+        if(!today){
+            console.log('today is undefined');
+            setUserInfo([
+                {text: 'Calorias', val: 0, meta: meta.cals? meta.cals:1},
+                {text: 'Proteinas', val: 0, meta: meta.proteinas? meta.proteinas:1},
+                {text: 'Carbohidratos', val: 0, meta: meta.carbs? meta.carbs:1},
+                {text: 'Grasas', val: 0, meta: meta.grasas? meta.grasas:1}
+            ]);
+            if(!isFetched) setIsFetched(true);
+            return ;
+        }
 
         for(const food of foods){
             cals += food.cals;
@@ -29,30 +62,20 @@ const Goals = ({navigation}) => {
             carbs += food.carbs;
         }
 
-        // si se cambia el retorno entonces se va a tener que hacer varios cambios al codigo
-        setNutrInfo([
-            {text: 'Calorias', val: cals, meta: metas.cals},
-            {text: 'Grasas', val: grasas, meta: metas.grasas},
-            {text: 'Proteinas', val: proteinas, meta: metas.proteinas},
-            {text: 'Carbohidratos', val: carbs, meta: metas.carbs}
+        setUserInfo([
+            {text: 'Calorias', val: cals, meta: meta.cals},
+            {text: 'Proteinas', val: proteinas, meta: meta.proteins},
+            {text: 'Carbohidratos', val: carbs, meta: meta.carbs},
+            {text: 'Grasas', val: grasas, meta: meta.grasas}
         ]);
+        return ;
     }
-
-    const [editing, setEditing] = useState(false);
-
-    const [nutrInfo, setNutrInfo] = useState([
-        {text: 'Grasas', val: 150, meta: 100, id:0},
-        {text: 'Proteinas', val: 25, meta: 50, id:1},
-        {text: 'Calorias', val: 50, meta: 123, id:2},
-        {text: 'Carbohidratos', val: 75, meta: 200, id:3}
-    ]);
+    
     React.useEffect(()=>{
-        async () => {
-            let dayTemp = await DayFuncs.getDayByDate(token, Dates.getToday());
-            setDay(dayTemp);
-        }
+        console.log('GoalScreen running React.useEffect');
+        updateToday();
         getNutrInfo();
-    },[]);
+    },[isFetched]);
 
     const MyInput = (props) => {
         return (
@@ -63,10 +86,58 @@ const Goals = ({navigation}) => {
                 // cuando se tenga la funcion para actualizar las metas en la base de datos cambiarla
                 onChangeText={input => {
                     if(!isNaN(Number(input) && input!== undefined))
-                        nutrInfo[props.index].meta = Number(input);
+                    userInfo[props.index].meta = Number(input);
                 }}  
             />
         );
+    }
+
+    const DisplayGoals = () => {
+        let myStyle = {width:150, height:28, marginTop:2};
+        if(editing)
+            return(
+                <View>
+                    <TextInput 
+                        style = {[styles.input, myStyle]}
+                        keyboardType="numeric"
+                        placeholder="Calorias"
+                        value={goals.cals.toString()}
+                        onChangeText={(texto)=> setGoals({...goals,cals:Number(texto)})}  
+                    />
+                    <TextInput 
+                        style = {[styles.input, myStyle]}
+                        keyboardType="numeric"
+                        placeholder="Proteinas"
+                        value={goals.proteins.toString()}
+                        onChangeText={(texto)=> setGoals({...goals,proteins:Number(texto)})}  
+                    />
+                    <TextInput 
+                        style = {[styles.input, myStyle]}
+                        keyboardType="numeric"
+                        placeholder="Carbohidratos"
+                        value={goals.carbs.toString()}
+                        onChangeText = {(texto)=> setGoals({...goals,carbs:Number(texto)})}
+                    />
+                    <TextInput 
+                        style = {[styles.input, myStyle]}
+                        keyboardType="numeric"
+                        placeholder="Grasas"
+                        value={goals.grasas.toString()}
+                        onChangeText = {(texto)=> setGoals({...goals,grasas:Number(texto)}) }
+                    />
+                </View>
+            );
+        else
+            return (
+                <View style = {{flexDirection: "row", flex:1}}>
+                    <View>
+                        {userInfo.map((item,i) => (<Text style={styles.textBody} key={i}>{item.text}</Text>))}
+                    </View>
+                    <View>
+                        {userInfo.map((info,i) => <Text style={styles.textBody} key={i}>{info.meta} g</Text>)}
+                    </View>
+                </View>
+            );
     }
 
     const ListItem = ({item}) => {
@@ -108,6 +179,15 @@ const Goals = ({navigation}) => {
         );
     };
     
+    const editHandler = async () => {
+        if(editing){
+            console.log('UserFuncs.updateUserGoals(token, goals); goals = ',goals);
+            UserFuncs.updateUserGoals(token, goals);
+            setIsFetched(!isFetched);
+        }
+        setEditing(!editing);
+    }
+    
     return (
         <View style = {styles.mainContainer}>
             <View style = {styles.containerHeader}>
@@ -119,12 +199,7 @@ const Goals = ({navigation}) => {
                     <Button 
                             title= {editing? 'Guardar':'Editar'}
                             color = '#1779ba'
-                            onPress = {() => {
-                                if(editing){
-                                    UserFuncs.updateUserGoals(token, nutrInfo);
-                                }
-                                setEditing(!editing);
-                            }}
+                            onPress = {editHandler}
                         />
                     </View>
                     
@@ -133,22 +208,14 @@ const Goals = ({navigation}) => {
                 <View style = {{flexDirection: "row", padding: 10, flex:1}}>
                     <View style = {{paddingRight: 15}}>
                         <Ionicons name='fitness-outline' size={100} color='black' />
-                        
                     </View>
-                    <View style = {{paddingRight: 15}}>
-                        {nutrInfo.map((item) => (<Text style={styles.textBody} key={item.id}>{item.text}</Text>))}
-                    </View>
-                    <View>
-                        {editing? 
-                            nutrInfo.map((item) => (<MyInput item={item} key={item.id} index={item.id} />)):
-                            nutrInfo.map((item) => <Text style={styles.textBody} key={item.id}>{item.meta.toString()} g</Text>)}
-                    </View>
+                    <DisplayGoals />
                 </View>
             </View>
 
             <View style = {{flex: 1}}>
                 <ScrollView>
-                    {nutrInfo.map((item) => <ListItem item={item} key={item.id}/>)}
+                    {userInfo.map((item,i) => <ListItem item={item} key={i}/>)}
                 </ScrollView>
             </View>
             

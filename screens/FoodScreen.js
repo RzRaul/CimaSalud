@@ -5,6 +5,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 
 import { AuthContext } from '../utils/AuthContext';
 import * as DayFuncs from '../services/dayFetchs';
+import * as FoodFuncs from '../services/foodFetchs';
 import styles from '../styles/styles';
 
 const Food = ({navigation}) => {
@@ -66,6 +67,7 @@ const Food = ({navigation}) => {
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
         console.log(`Bar code with type ${type} and data ${data} has been scanned!`);
+        getFoodByCode(token, data);
         // Falta peticion a la base de datos
         setIsScanning(false)
         /* Data = a el numero debajo del codigo de barras, el usuario no creo que lo verificaria
@@ -100,23 +102,23 @@ const Food = ({navigation}) => {
                             </View>
                             
                             <View style = {{flexDirection: "row", padding: 5, flex:1}}>
-                                <TouchableImg width={75} backgroundColor='#C1ACA1' text='Add Food'
+                                <TouchableImg width={75} backgroundColor='#C1ACA1' text='Add'
                                     name='restaurant-outline' size={50} color='black' img={null}
                                     onPress={() => null} 
                                 />
 
-                                <TouchableImg width={75} backgroundColor='#C1ACA1' text='Delete Food'
+                                <TouchableImg width={75} backgroundColor='#C1ACA1' text='Delete'
                                     name='trash-outline' size={50} color='black' img={null}
                                     onPress={() => null} 
                                 />
 
-                                <TouchableImg width={75} backgroundColor='#C1ACA1' text='Edit Food'
+                                <TouchableImg width={75} backgroundColor='#C1ACA1' text='Edit'
                                     name='pencil' size={50} color='black' img={null}
                                     onPress={() => null} 
                                 />
 
                                 <TouchableImg width={75} backgroundColor='#C1ACA1' text='Scan'
-                                    name='qr-code-outline' size={50} color='black' img={null}
+                                    name='barcode-outline' size={50} color='black' img={null}
                                     onPress={() => {
                                         if (hasPermission === false) {
                                             createAlert('No se tiene acceso a la camara','',{

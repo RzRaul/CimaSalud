@@ -19,18 +19,14 @@ export const getMyDays = async (token) => {
 
  export const getDayByDate = async (token, fecha) => {
 	try {
-	  let response = await fetch(url + '/days/date', {
+	  let response = await fetch(url + '/days/date/'+fecha, {
 		 method: 'GET',
 		 headers: {
 			'Access-Control-Allow-Origin': '*',
 			Authorization: 'Bearer ' + token,
-		 },
-		 body: JSON.stringify({
-			date: fecha,
-		 }),
+		 }
 	  });
 	  let json = await response.json();
-	  console.log('getDayByDate Recibe '+ json);
 	  return json;
 	} catch (error) {
 	  console.log(error);
