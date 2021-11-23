@@ -10,7 +10,7 @@ const Food = ({navigation}) => {
 
 
     return (
-        <View style = {styles.container}>
+        <View style = {styles.mainContainer}>
             <Text>  Cargando... </Text>
         </View>
     )

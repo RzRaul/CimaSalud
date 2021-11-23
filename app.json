@@ -4,9 +4,9 @@
     "slug": "CimaHealth",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icons/iconApple.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/backgrounds/loginBkgdWhite.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
