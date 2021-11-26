@@ -4,9 +4,10 @@ import { Alert, Button, Text, View, Image, TextInput, TouchableOpacity, ScrollVi
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 import { AuthContext } from '../utils/AuthContext';
+import { TouchableImg } from '../utils/components';
 import * as DayFuncs from '../services/dayFetchs';
 import * as FoodFuncs from '../services/foodFetchs';
-import styles from '../styles/styles';
+import styles, {colors} from '../styles/styles';
 
 const Food = ({navigation}) => {
     const {loginState} = React.useContext(AuthContext);
@@ -14,21 +15,6 @@ const Food = ({navigation}) => {
 
     const {searchFood, setSearchFood} = React.useState();
 
-    const TouchableImg = (props) => {
-        return (
-            <TouchableOpacity
-                style={[styles.button, {width: props.width, backgroundColor: props.backgroundColor}]}
-                onPress = {props.onPress}
-            >
-                {
-                    props.img !== null?
-                    <Image source={props.img} style={{ width: props.imgWidth, height: props.imgHeight }} />:
-                    <Ionicons name={props.name} size={props.size} color={props.color} />
-                }
-                <Text>{props.text}</Text>
-            </TouchableOpacity>
-        );
-    }
 
     const [hasPermission, setHasPermission] = useState(null);
     const [isScanning, setIsScanning] = useState(false);
@@ -61,36 +47,34 @@ const Food = ({navigation}) => {
             { !isScanning?
                 <View style = {styles.mainContainer}>
                     <ScrollView>
-                        <View style = {[styles.containerHeader, {height: 175, paddingTop: 5}]}>
-                            <View style = {{flexDirection: "row", justifyContent: 'space-between'}}>
-                                <View >
+                        <View style = {[styles.containerHeader, {paddingTop: 15}]}>
+                            <View style = {{flexDirection: "column", justifyContent: 'space-between'}}>
                                     <Text style = {styles.textHeader}>Alimentos</Text>
                                     <TextInput 
-                                        style = {[styles.input, {width:330}]}
-                                        placeholder="Enter Food"
+                                        style = {[styles.input, {width:'100%'}]}
+                                        placeholder="Buscar alimento"
                                         onChangeText={setSearchFood}  
                                     />
-                                </View>
                             </View>
                             
                             <View style = {{flexDirection: "row", padding: 5, flex:1}}>
-                                <TouchableImg width={75} backgroundColor='#C1ACA1' text='Add'
-                                    name='restaurant-outline' size={50} color='black' img={null}
+                                <TouchableImg width={75} text='Agregar'
+                                    name='restaurant-outline' size={40} color='black' img={null}
                                     onPress={() => null} 
                                 />
 
-                                <TouchableImg width={75} backgroundColor='#C1ACA1' text='Delete'
-                                    name='trash-outline' size={50} color='black' img={null}
+                                <TouchableImg width={75}  text='Eliminar'
+                                    name='trash-outline' size={40} color='black' img={null}
                                     onPress={() => null} 
                                 />
 
-                                <TouchableImg width={75} backgroundColor='#C1ACA1' text='Edit'
-                                    name='pencil' size={50} color='black' img={null}
+                                <TouchableImg width={75}  text='Edit'
+                                    name='pencil' size={40} color='black' img={null}
                                     onPress={() => null} 
                                 />
 
-                                <TouchableImg width={75} backgroundColor='#C1ACA1' text='Scan'
-                                    name='barcode-outline' size={50} color='black' img={null}
+                                <TouchableImg width={75} text='Scan'
+                                    name='barcode-outline' size={40} color='black' img={null}
                                     onPress={() => {
                                         if (hasPermission === false) {
                                             createAlert('No se tiene acceso a la camara','',{
@@ -105,39 +89,39 @@ const Food = ({navigation}) => {
                             </View>
                             
                         </View>
-                        <View style={{paddingTop: 15, backgroundColor: '#F3F3F3'}}>
-                            <Text style = {styles.textBody}>Recommended</Text>
+                        <View style={{paddingTop: 15}}>
+                            <Text style = {styles.textBody}>Recomendado</Text>
                         </View>
                         <View style={{flexDirection: "row", justifyContent: 'space-around', paddingLeft: 0, height: 75, backgroundColor: '#9DD5D4'}}>
-                            <TouchableImg width={50} backgroundColor='#9DD5D4' text=''
+                            <TouchableImg width={50}  text=''
                                 name='ios-arrow-back' size={30} color='black' img={null}
                                 onPress={() => null} 
                             />
 
-                            <TouchableImg width={75} backgroundColor='#9DD5D4' text='Apple'
+                            <TouchableImg width={75}  text='Apple'
                                 img={require('../assets/foods/iconApple.png')} imgHeight={40} imgWidth={40}
                                 onPress={() => null} 
                             />
 
-                            <TouchableImg width={75} backgroundColor='#9DD5D4' text='Milk'
+                            <TouchableImg width={75}  text='Milk'
                                 img={require('../assets/foods/iconMilk.png')} imgHeight={40} imgWidth={40}
                                 onPress={() => null} 
                             />
 
-                            <TouchableImg width={75} backgroundColor='#9DD5D4' text='Eggs'
+                            <TouchableImg width={75}  text='Eggs'
                                 img={require('../assets/foods/iconEggs.png')} imgHeight={40} imgWidth={40}
                                 onPress={() => null} 
                             />
 
-                            <TouchableImg width={50} backgroundColor='#9DD5D4' text=''
+                            <TouchableImg width={50}  text=''
                                 name='ios-arrow-forward' size={30} color='black' img={null}
                                 onPress={() => null} 
                             /> 
                         </View>
 
-                        <View style={{paddingTop: 15, margin: 15, backgroundColor: '#F3F3F3'}}>
-                            <Text style = {styles.textBody}>Add Item</Text>
-                            <View style={{padding: 15, backgroundColor: '#E1DEDE', alignItems:'center'}}>
+                        <View style={{paddingTop: 15, margin: 15}}>
+                            <Text style = {styles.textBody}>Agregar alimento</Text>
+                            <View style={{padding: 15, backgroundColor: '#E1DEDE', alignItems:'center', justifyContent:'space-between'}}>
                                 <TextInput 
                                             style = {[styles.input, {width:200}]}
                                             placeholder="Enter Name"

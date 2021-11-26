@@ -6,6 +6,7 @@ import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {createDrawerNavigator} from "@react-navigation/drawer";
 import {AuthContext} from "./utils/AuthContext";
 import { loginReducer, initialState } from "./utils/authReducer";
+import { useFonts, Roboto_300Light, Roboto_500Medium, Roboto_700Bold } from "@expo-google-fonts/roboto";
 import * as UserFuncs from "./services/userFetchs"
 
 
@@ -129,8 +130,13 @@ function App() {
         user = await UserFuncs.getUserInfo(userToken);
         dispatch({type: 'signup', userMail, userName, userToken, metas});
       },
+<<<<<<< HEAD
       updateGoals: async (usertoken, metas) => {
         let goals = await UserFuncs.updateUserGoals(usertoken, metas);
+=======
+      updateGoals: async (token,metas) => {
+        let goals = await UserFuncs.updateUserGoals(token, metas);
+>>>>>>> bb72dad942433d12595b4bf651f359867b6d6cc6
         dispatch({type: 'updateMetas', metas:goals});
       },
       getState:()=>{
