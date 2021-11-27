@@ -48,7 +48,7 @@ const Goals = ({navigation}) => {
       setUserInfo([
         {text: 'Calorias', val: 0, meta: metas.cals},
         {text: 'Proteinas', val: 0, meta: metas.proteins},
-        {text: 'Carbohidratos', val: 0, meta: metas.carbs},
+        {text: 'Carbs', val: 0, meta: metas.carbs},
         {text: 'Grasas', val: 0, meta: metas.grasas},
       ]);
       return ;
@@ -65,7 +65,7 @@ const Goals = ({navigation}) => {
     setUserInfo([
       {text: 'Calorias', val: cals, meta: metas.cals},
       {text: 'Proteinas', val: proteinas, meta: metas.proteins},
-      {text: 'Carbohidratos', val: carbs, meta: metas.carbs},
+      {text: 'Carbs', val: carbs, meta: metas.carbs},
       {text: 'Grasas', val: grasas, meta: metas.grasas},
     ]);
     setGoals(metas);
@@ -76,95 +76,6 @@ const Goals = ({navigation}) => {
     console.log('running React.useEffect in GoalScreen');
     getInfo();
   },[metas]);
-
-  const DisplayGoals = () => {
-    let myStyle = {width:150, height:28, marginTop:2};
-    console.log('rendering ListItem'); //debug
-    if(editing)
-      return(
-        <View>
-          <TextInput 
-            style = {[styles.input, myStyle]}
-            keyboardType="numeric"
-            placeholder="Calorias"
-            value={goals.cals.toString()}
-            onChangeText={(texto)=> setGoals({...goals,cals:Number(texto)})}  
-          />
-          <TextInput 
-            style = {[styles.input, myStyle]}
-            keyboardType="numeric"
-            placeholder="Proteinas"
-            value={goals.proteins.toString()}
-            onChangeText={(texto)=> setGoals({...goals,proteins:Number(texto)})}  
-          />
-          <TextInput 
-            style = {[styles.input, myStyle]}
-            keyboardType="numeric"
-            placeholder="Carbohidratos"
-            value={goals.carbs.toString()}
-            onChangeText = {(texto)=> setGoals({...goals,carbs:Number(texto)})}
-          />
-          <TextInput 
-            style = {[styles.input, myStyle]}
-            keyboardType="numeric"
-            placeholder="Grasas"
-            value={goals.grasas.toString()}
-            onChangeText = {(texto)=> setGoals({...goals,grasas:Number(texto)}) }
-          />
-        </View>
-      );
-    else
-      return (
-        <View style = {{flexDirection: "row", flex:1}}>
-          <View>
-            {userInfo.map((item,i) => (<Text style={styles.textBody} key={i}>{item.text}</Text>))}
-          </View>
-          <View>
-            {userInfo.map((info,i) => <Text style={styles.textBody} key={i}>{info.meta} g</Text>)}
-          </View>
-        </View>
-      );
-  }
-
-  const ListItem = ({item}) => {
-
-    return (
-      <View style={{paddingTop: 15, backgroundColor: '#F3F3F3'}}>
-        <View style={{padding: 15, backgroundColor: '#9DD5D4'}}>
-          <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text style = {styles.textBody}>{item.text}</Text>
-          </View>
-          <View style = {{padding: 10, flexDirection: 'row', justifyContent: 'space-around'}}>
-            <ProgressChart
-              data={ {data: [item.val<item.meta ? item.val / item.meta : 1]} }
-              width={175}
-              height={75}
-              strokeWidth={10}
-              radius={25}
-              chartConfig={{
-                backgroundColor: "#9DD5D4",
-                backgroundGradientFrom: "#9DD5D4",
-                backgroundGradientTo: "#9DD5D4",
-                color: (opacity = 1) => {
-                  return (
-                    item.val<item.meta?
-                    `rgba(255, 255, 255, ${opacity})`:
-                    `rgba(175, 10, 10, ${opacity})`
-                  )
-                },
-                style: {
-                  borderRadius: 10
-                }
-              }}
-            />
-
-            <Text style = {styles.textBody}>{item.val} / {item.meta}</Text>
-              
-          </View>
-        </View>
-      </View>
-    );
-  };
     
   const editHandler = () => {
     if(editing){
@@ -239,7 +150,7 @@ const Goals = ({navigation}) => {
 
   const ListItem = ({ item }) => {
     return (
-      <View style={{ paddingTop: 15, backgroundColor: '#F3F3F3' }}>
+      <View style={{ paddingTop: 15}}>
         <View style={{ padding: 15, backgroundColor: '#9DD5D4' }}>
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
@@ -283,46 +194,35 @@ const Goals = ({navigation}) => {
     );
   };
 
-  const editHandler = () => {
-    if (editing) {
-      console.log('UserFuncs.updateUserGoals(token, goals); goals = ', goals);
-      globalFuncs.updateGoals(metas);
-      setIsFetched(!isFetched);
-    }
-    setEditing(!editing);
-  };
-
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.containerHeader}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View>
-            <Text style={styles.textHeader}>Metas</Text>
-          </View>
-          <View>
-            <Button
-              title={editing ? 'Guardar' : 'Editar'}
-              color='#1779ba'
-              onPress={editHandler}
-            />
-          </View>
-        </View>
-
-        <View style={{ flexDirection: 'row', padding: 10, flex: 1 }}>
-          <View style={{ paddingRight: 15 }}>
-            <Ionicons name='fitness-outline' size={100} color='black' />
-          </View>
-          <DisplayGoals />
-        </View>
-      </View>
-
-      <View style={{ flex: 1 }}>
         <ScrollView>
+          <View style={styles.containerHeader}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View>
+              <Text style={styles.textHeader}>Metas</Text>
+            </View>
+            <View>
+              <Button
+                title={editing ? 'Guardar' : 'Editar'}
+                color='#1779ba'
+                onPress={editHandler}
+              />
+            </View>
+          </View>
+
+          <View style={{ flexDirection: 'row', padding: 10, flex: 1 }}>
+            <View style={{ paddingRight: 15 }}>
+              <Ionicons name='fitness-outline' size={100} color='black' />
+            </View>
+            <DisplayGoals />
+          </View>
+        </View>
+
           {userInfo.map((item, i) => (
             <ListItem item={item} key={i} />
           ))}
-        </ScrollView>
-      </View>
+      </ScrollView>
     </View>
   );
 };

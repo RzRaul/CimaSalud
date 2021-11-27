@@ -1,15 +1,35 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { Alert, Button, ScrollView, Text, View } from 'react-native';
-import {Calendar} from 'react-native-calendars';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import   { Calendar } from 'react-native-calendars';
 
 import { AuthContext } from '../utils/AuthContext';
 import * as DayFuncs from '../services/dayFetchs';
 import * as Dates from '../utils/Dates';
-import styles from '../styles/styles';
+import styles, { colors } from '../styles/styles';
+import {
+    useFonts,
+    Roboto_300Light,
+    Roboto_500Medium,
+    Roboto_700Bold,
+    Roboto_300Light_Italic,
+} from '@expo-google-fonts/roboto';
 
 const More = ({navigation}) => {
     const {loginState} = React.useContext(AuthContext);
     const token = loginState.userToken;
+
+    let [fontsLoaded] = useFonts({
+        light: Roboto_300Light,
+        regular: Roboto_500Medium,
+        bold: Roboto_700Bold,
+    });
+    const [showing, setShow] = React.useState({
+        showBreakFast: false,
+        showLunch: false,
+        showDinner: false,
+        showSnacks: false,
+    });
     
 
     const updateDay = async (date) => {
@@ -50,52 +70,136 @@ const More = ({navigation}) => {
       ]
     );
 
-    const ListItem = ({food}) => {
-        return (
-            <View style={{paddingTop: 15, backgroundColor: '#F3F3F3'}}>
-                <View style={{padding: 15, backgroundColor: '#9DD5D4'}}>
-                    <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Text style = {styles.textBody}>{food.name}</Text>
+    const viewItems = (title) => {
+        switch (title) {
+            case 'Desayuno':
+                setShow({
+                    ...showing,
+                    showBreakFast: !showing.showBreakFast,
+                });
+                break;
+            case 'Almuerzo':
+                setShow({ ...showing, showLunch: !showing.showLunch });
+                break;
+            case 'Cena':
+                setShow({ ...showing, showDinner: !showing.showDinner });
+                break;
+            case 'Snacks':
+                setShow({ ...showing, showSnacks: !showing.showSnacks });
+                break;
+            default:
+                break;
+        }
+    };
+
+    const ListItem = ({ food }) => {
+        if (fontsLoaded)
+            return (
+                <View style={styles.ListCard}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Text style={{ fontFamily: 'light', fontSize: 18 }}>
+                            {food.name}
+                        </Text>
                     </View>
-                    <View style = {{padding: 10, flexDirection: 'column', justifyContent: 'space-around'}}>
-                        <Text style = {styles.textBody}>Calorias {food.cals}</Text>
-                        <Text style = {styles.textBody}>Grasas {food.grasas}</Text>
-                        <Text style = {styles.textBody}>Proteinas {food.proteinas}</Text>
-                        <Text style = {styles.textBody}>Carbohidratos {food.carbs}</Text>
+                    <View style={styles.fourCard}>
+                        <Text style={styles.textBody}>
+                            Calorias: {food.cals}
+                        </Text>
+                        <Text style={styles.textBody}>
+                            Proteinas: {food.proteinas}
+                        </Text>
+                        <Text style={styles.textBody}>Carbs: {food.carbs}</Text>
+                        <Text style={styles.textBody}>
+                            Grasas: {food.grasas}
+                        </Text>
                     </View>
                 </View>
+            );
+        else return null;
+    };
+
+    const TitleWithBody = ({ obj }) => {
+        if (fontsLoaded)
+            return (
+                <TouchableOpacity
+                    onPress={() => viewItems(obj.title)}
+                    activeOpacity={0.9}
+                >
+                    <View
+                        style={[
+                            styles.containerBody,
+                            { backgroundColor: colors.neutro },
+                        ]}
+                        marginTop={20}
+                        padding={8}
+                    >
+                        <Text
+                            style={{
+                                fontFamily: 'regular',
+                                fontSize: 22,
+                                marginVertical: 13,
+                                flex: 1,
+                            }}
+                        >
+                            {obj.title}
+                        </Text>
+
+                        {obj.body.length != 0 ? (
+                            obj.body.map(
+                                (food, i) =>
+                                    obj.show && <ListItem food={food} key={i} />
+                            )
+                        ) : (
+                            <Text>No Hay Datos</Text>
+                        )}
+                    </View>
+                </TouchableOpacity>
+            );
+        else return null;
+    };
+
+    const DayFoods = () => {
+        return (
+            <View style={(styles.container, { marginBottom:15 })}>
+                <TitleWithBody
+                    obj={{
+                        title: 'Desayuno',
+                        body: day ? day.desayuno : [],
+                        show: showing.showBreakFast,
+                    }}
+                />
+                <TitleWithBody
+                    obj={{
+                        title: 'Almuerzo',
+                        body: day ? day.almuerzo : [],
+                        show: showing.showLunch,
+                    }}
+                />
+                <TitleWithBody
+                    obj={{
+                        title: 'Cena',
+                        body: day ? day.cena : [],
+                        show: showing.showDinner,
+                    }}
+                />
+                <TitleWithBody
+                    obj={{
+                        title: 'Snacks',
+                        body: day ? day.snacks : [],
+                        show: showing.showSnacks,
+                    }}
+                />
             </View>
         );
     };
-    const TitleWithBody = ({obj}) => {
-        return (
-            <View style={[styles.containerBody,{backgroundColor: '#d4c9b9'}]} margin={5} padding={10}>
-                <Text style={{fontSize: 25, fontWeight: 'bold'}}>{ obj.title }</Text>
-                { obj.body !== undefined || obj.body.length != 0 ? 
-                    obj.body.map( (food,i) => (<ListItem food={food} key={i}/>) ):
-                    <Text>No Hay Datos</Text>
-                }
-            </View>
-        );
-    }
-
-    const DayFoods = () => {
-        let desayuno = day? day.desayuno : [];
-        let almuerzo = day? day.desayuno : [];
-        let cena = day? day.desayuno : [];
-        let snacks = day? day.desayuno : [];
-        return (
-            <View>
-                <TitleWithBody obj={{title:'Desayuno', body:desayuno}} />
-                <TitleWithBody obj={{title:'Almuerzo', body:almuerzo}} />
-                <TitleWithBody obj={{title:'Cena', body:cena}} />
-                <TitleWithBody obj={{title:'Snacks', body:snacks}} />
-            </View>
-        );
-    }
 
     return (
-        <View style = {{flex:1}}>
+        <View style={styles.mainContainer}>
             <ScrollView style = {{margin: 5, paddingTop:10}}>
                 <Calendar 
                     onDayPress={ async (date) => {
@@ -104,12 +208,14 @@ const More = ({navigation}) => {
                     markedDates = {markedDates}
                 />
                 <DayFoods />
-                <View style = {{margin: 5, paddingTop:10}}>
-                    <Button 
-                        title='Contactanos'
-                        color = '#1779ba'
+
+                <View style={{ flex: 1, justifyContent:'space-evenly', alignItems:'center', marginBottom:10 }}>
+                    <TouchableOpacity
+                        style = {styles.buttonBody}
                         onPress = {createTwoButtonAlert}
-                    />
+                    >
+                        <Text style = {{color:'#ffffff'}}>Contactanos</Text>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
         </View>

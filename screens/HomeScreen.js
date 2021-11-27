@@ -58,7 +58,7 @@ const Home = ({ navigation }) => {
         let foods = dayTemp? dayTemp.desayuno.concat(dayTemp.almuerzo,dayTemp.cena,dayTemp.snacks): [];
 
         if(foods == 0){
-            console.log('foods is [] in getNutInfo');
+            console.log('foods is [] in getInfo');
             setUserInfo([
                 {text: 'Calorias', val: 0, meta: metas.cals},
                 {text: 'Proteinas', val: 0, meta: metas.proteinas},
@@ -78,7 +78,7 @@ const Home = ({ navigation }) => {
         setUserInfo([
             {text: 'Calorias', val: cals, meta: metas.cals},
             {text: 'Proteinas', val: proteinas, meta: metas.proteinas},
-            {text: 'Carbohidratos', val: carbs, meta: metas.carbs},
+            {text: 'Carbs', val: carbs, meta: metas.carbs},
             {text: 'Grasas', val: grasas, meta: metas.grasas},
 
         ]);
@@ -251,6 +251,7 @@ const Home = ({ navigation }) => {
             />
         );
     };
+    
     if (!fontsLoaded) {
         return null;
     } else {
