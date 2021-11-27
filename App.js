@@ -130,8 +130,8 @@ function App() {
         user = await UserFuncs.getUserInfo(userToken);
         dispatch({type: 'signup', userMail, userName, userToken, metas});
       },
-      updateGoals: async (token,metas) => {
-        let goals = await UserFuncs.updateUserGoals(token, metas);
+      updateGoals: async (usertoken, metas) => {
+        let goals = await UserFuncs.updateUserGoals(usertoken, metas);
         dispatch({type: 'updateMetas', metas:goals});
       },
       getState:()=>{

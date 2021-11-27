@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 // secundary = d5ab9d
 
 export const colors = {
-    primary: '#ebf5ec',
+    primary: '#eef6ef',
     secondary :'#8Ac97a',
     neutro: '#BCDDD4',
     accent: '#52b265'
@@ -93,12 +93,21 @@ export default StyleSheet.create({
         padding: 10,
         margin: 5,
         borderRadius: 5
-      },
-      ListCard:{
-          padding:15, 
-          backgroundColor: colors.primary, 
-          marginBottom:20, 
-          borderRadius:10,
-          overflow:'hidden'
+    },
+    buttonBody: {
+        alignItems: "center",
+        backgroundColor: "#79b4c8",
+        width: 150,
+        height: 35,
+        padding: 10,
+        margin: 5,
+        borderRadius: 5
+    },
+    ListCard:{
+        padding:15, 
+        backgroundColor: colors.primary, 
+        marginBottom:20, 
+        borderRadius:10,
+        overflow:'hidden'
     }
 });

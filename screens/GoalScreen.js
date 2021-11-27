@@ -9,93 +9,80 @@ import * as UserFuncs from '../services/userFetchs';
 import * as Dates from '../utils/Dates';
 import styles from '../styles/styles';
 
-const Goals = ({ navigation }) => {
-  const { loginState, globalFuncs } = React.useContext(AuthContext);
+const Goals = ({navigation}) => {
+  const {loginState, globalFuncs} = React.useContext(AuthContext);
   const token = loginState.userToken;
-  const metas = loginState.metas;
-  console.log(JSON.stringify(metas));
+  let metas = loginState.metas;
+  console.log('JSON.stringify(metas) = ',JSON.stringify(metas));
   const [editing, setEditing] = useState(false);
 
   const [today, setToday] = useState(null);
   const [userInfo, setUserInfo] = useState([
-    { text: 'Calorias', val: 0, meta: 0 },
-    { text: 'Proteinas', val: 0, meta: 0 },
-    { text: 'Carbohidratos', val: 0, meta: 0 },
-    { text: 'Grasas', val: 0, meta: 0 },
+      {text: 'Calorias', val: 0, meta: 0},
+      {text: 'Proteinas', val: 0, meta: 0},
+      {text: 'Carbohidratos', val: 0, meta: 0},
+      {text: 'Grasas', val: 0, meta: 0}
   ]);
   const [goals, setGoals] = useState({
-    cals: 0,
-    proteins: 0,
-    carbs: 0,
-    grasas: 0,
+      cals: 0,
+      proteins: 0,
+      carbs: 0,
+      grasas: 0,
   });
-  const [isFetched, setIsFetched] = useState(false);
 
-  const updateToday = async () => {
+  const getInfo = async () => {
     let dayTemp = await DayFuncs.getDayByDate(token, Dates.getToday());
+    if(!metas){
+      let {meta} = await UserFuncs.getUserInfo(token);
+      metas = meta;
+    }    
+      
+    let cals = proteinas = grasas = carbs = 0;
     setToday(dayTemp);
-  };
+    const state = await globalFuncs.getState();
+    console.log('func getState.meta', state);
+    let foods = dayTemp? dayTemp.desayuno.concat(dayTemp.almuerzo,dayTemp.cena,dayTemp.snacks): [];
 
-  const getNutrInfo = () => {
-    let cals = (proteinas = grasas = carbs = 0);
-    let foods = today
-      ? today.desayuno.concat(today.almuerzo, today.cena, today.snacks)
-      : [];
-
-    let meta = metas;
-    console.log('Meta es:' + meta); //debug
-    setGoals(meta);
-
-    if (!today) {
-      //console.log('today is undefined');
+    if(foods == 0){
+      console.log('foods is [] in getNutInfo');
       setUserInfo([
-        { text: 'Calorias', val: 0, meta: meta.cals ? meta.cals : 1 },
-        {
-          text: 'Proteinas',
-          val: 0,
-          meta: meta.proteinas ? meta.proteinas : 1,
-        },
-        { text: 'Carbohidratos', val: 0, meta: meta.carbs ? meta.carbs : 1 },
-        { text: 'Grasas', val: 0, meta: meta.grasas ? meta.grasas : 1 },
+        {text: 'Calorias', val: 0, meta: metas.cals},
+        {text: 'Proteinas', val: 0, meta: metas.proteins},
+        {text: 'Carbs', val: 0, meta: metas.carbs},
+        {text: 'Grasas', val: 0, meta: metas.grasas},
       ]);
-      if (!isFetched) setIsFetched(true);
-      return;
+      return ;
     }
 
-    for (const food of foods) {
+    for(const food of foods){
       cals += food.cals;
       proteinas += food.proteinas;
       grasas += food.grasas;
       carbs += food.carbs;
     }
+
+
     setUserInfo([
-      { text: 'Calorias', val: cals, meta: meta.cals },
-      { text: 'Proteinas', val: proteinas, meta: meta.proteins },
-      { text: 'Carbohidratos', val: carbs, meta: meta.carbs },
-      { text: 'Grasas', val: grasas, meta: meta.grasas },
+      {text: 'Calorias', val: cals, meta: metas.cals},
+      {text: 'Proteinas', val: proteinas, meta: metas.proteins},
+      {text: 'Carbs', val: carbs, meta: metas.carbs},
+      {text: 'Grasas', val: grasas, meta: metas.grasas},
     ]);
-    return;
-  };
+    setGoals(metas);
+    return ;
+  }
 
-  React.useEffect(() => {
-    //console.log('GoalScreen running React.useEffect');
-    updateToday();
-    getNutrInfo();
-  }, [isFetched]);
-
-  const MyInput = (props) => {
-    return (
-      <TextInput
-        style={styles.input}
-        keyboardType='numeric'
-        // cuando se tenga la funcion para actualizar las metas en la base de datos cambiarla
-        onChangeText={(input) => {
-          if (!isNaN(Number(input) && input !== undefined))
-            userInfo[props.index].meta = Number(input);
-        }}
-      />
-    );
-  };
+  React.useEffect(()=>{
+    console.log('running React.useEffect in GoalScreen');
+    getInfo();
+  },[metas]);
+    
+  const editHandler = () => {
+    if(editing){
+      globalFuncs.updateGoals(token, goals);
+    }
+    setEditing(!editing);
+  }
 
   const DisplayGoals = () => {
     let myStyle = { width: 150, height: 28, marginTop: 2 };
@@ -163,7 +150,7 @@ const Goals = ({ navigation }) => {
 
   const ListItem = ({ item }) => {
     return (
-      <View style={{ paddingTop: 15, backgroundColor: '#F3F3F3' }}>
+      <View style={{ paddingTop: 15}}>
         <View style={{ padding: 15, backgroundColor: '#9DD5D4' }}>
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
@@ -207,46 +194,35 @@ const Goals = ({ navigation }) => {
     );
   };
 
-  const editHandler = () => {
-    if (editing) {
-      console.log('UserFuncs.updateUserGoals(token, goals); goals = ', goals);
-      globalFuncs.updateGoals(metas);
-      setIsFetched(!isFetched);
-    }
-    setEditing(!editing);
-  };
-
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.containerHeader}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View>
-            <Text style={styles.textHeader}>Metas</Text>
-          </View>
-          <View>
-            <Button
-              title={editing ? 'Guardar' : 'Editar'}
-              color='#1779ba'
-              onPress={editHandler}
-            />
-          </View>
-        </View>
-
-        <View style={{ flexDirection: 'row', padding: 10, flex: 1 }}>
-          <View style={{ paddingRight: 15 }}>
-            <Ionicons name='fitness-outline' size={100} color='black' />
-          </View>
-          <DisplayGoals />
-        </View>
-      </View>
-
-      <View style={{ flex: 1 }}>
         <ScrollView>
+          <View style={styles.containerHeader}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View>
+              <Text style={styles.textHeader}>Metas</Text>
+            </View>
+            <View>
+              <Button
+                title={editing ? 'Guardar' : 'Editar'}
+                color='#1779ba'
+                onPress={editHandler}
+              />
+            </View>
+          </View>
+
+          <View style={{ flexDirection: 'row', padding: 10, flex: 1 }}>
+            <View style={{ paddingRight: 15 }}>
+              <Ionicons name='fitness-outline' size={100} color='black' />
+            </View>
+            <DisplayGoals />
+          </View>
+        </View>
+
           {userInfo.map((item, i) => (
             <ListItem item={item} key={i} />
           ))}
-        </ScrollView>
-      </View>
+      </ScrollView>
     </View>
   );
 };

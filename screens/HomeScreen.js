@@ -14,7 +14,6 @@ import { ProgressChart } from 'react-native-chart-kit';
 
 import { AuthContext } from '../utils/AuthContext';
 import * as DayFuncs from '../services/dayFetchs';
-import * as UserFuncs from '../services/userFetchs';
 import * as Dates from '../utils/Dates';
 import { TouchableImg } from '../utils/components';
 import styles, { colors, fonts } from '../styles/styles';
@@ -30,6 +29,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 const Home = ({ navigation }) => {
     const { loginState, globalFuncs } = React.useContext(AuthContext);
     const token = loginState.userToken;
+    const metas = loginState.metas;
     let [fontsLoaded] = useFonts({
         light: Roboto_300Light,
         regular: Roboto_500Medium,
@@ -49,50 +49,23 @@ const Home = ({ navigation }) => {
         { text: 'Carbs', val: 0, meta: 0 },
         { text: 'Grasas', val: 0, meta: 0 },
     ]);
-    const [isFetched, setIsFetched] = useState(false);
 
-    const updateToday = async () => {
-        let dayTemp = await DayFuncs.getDayByDate(
-            loginState.userToken,
-            Dates.getToday()
-        );
+    const getInfo = async () => {
+        let dayTemp = await DayFuncs.getDayByDate(token, Dates.getToday());
+        let cals = proteinas = grasas = carbs = 0;
         setToday(dayTemp);
-    };
 
-    const getNutrInfo = async () => {
-        let cals = (proteinas = grasas = carbs = 0);
-        let foods = today
-            ? today.desayuno.concat(today.almuerzo, today.cena, today.snacks)
-            : [];
+        let foods = dayTemp? dayTemp.desayuno.concat(dayTemp.almuerzo,dayTemp.cena,dayTemp.snacks): [];
 
-        let { meta } = await UserFuncs.getUserInfo(token);
-
-        if (!today) {
-            console.log('today is undefined');
+        if(foods == 0){
+            console.log('foods is [] in getInfo');
             setUserInfo([
-                {
-                    text: 'Calorias:',
-                    val: 0,
-                    meta: meta.cals ? meta.cals : 1,
-                },
-                {
-                    text: 'Proteinas:',
-                    val: 0,
-                    meta: meta.proteinas ? meta.proteinas : 1,
-                },
-                {
-                    text: 'Cars:',
-                    val: 0,
-                    meta: meta.carbs ? meta.carbs : 1,
-                },
-                {
-                    text: 'Grasas:',
-                    val: 0,
-                    meta: meta.grasas ? meta.grasas : 1,
-                },
+                {text: 'Calorias', val: 0, meta: metas.cals},
+                {text: 'Proteinas', val: 0, meta: metas.proteinas},
+                {text: 'Carbohidratos', val: 0, meta: metas.carbs},
+                {text: 'Grasas', val: 0, meta: metas.grasas},
             ]);
-            if (!isFetched) setIsFetched(true);
-            return;
+            return ;
         }
 
         for (const food of foods) {
@@ -103,19 +76,19 @@ const Home = ({ navigation }) => {
         }
 
         setUserInfo([
-            { text: 'Calorias:', val: cals, meta: meta.cals },
-            { text: 'Proteinas:', val: proteinas, meta: meta.proteinas },
-            { text: 'Carbs:', val: carbs, meta: meta.carbs },
-            { text: 'Grasas:', val: grasas, meta: meta.grasas },
+            {text: 'Calorias', val: cals, meta: metas.cals},
+            {text: 'Proteinas', val: proteinas, meta: metas.proteinas},
+            {text: 'Carbs', val: carbs, meta: metas.carbs},
+            {text: 'Grasas', val: grasas, meta: metas.grasas},
+
         ]);
         return;
     };
 
     React.useEffect(() => {
         console.log('running React.useEffect');
-        updateToday();
-        getNutrInfo();
-    }, [isFetched]);
+        getInfo();
+    },[]);
 
     const logOutHandler = () => {
         globalFuncs.signOut();
@@ -278,6 +251,7 @@ const Home = ({ navigation }) => {
             />
         );
     };
+    
     if (!fontsLoaded) {
         return null;
     } else {
