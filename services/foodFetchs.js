@@ -78,6 +78,33 @@ export const getFoodByType = async (token, typeName) => {
   }
 };
 
+export const addFoodByName = async (token, newFood) => {
+  try {
+    let response = await fetch(url + '/food', {
+      method: 'POST',
+      mode: 'cors', // or without this line
+      redirect: 'follow',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        name: newFood.name,
+        cals: newFood.cals,
+        proteinas: newFood.proteinas,
+        grasas: newFood.grasas,
+        carbs: newFood.carbs,
+        type: newFood.type,
+      }),
+    });
+    let json = await response.json();
+    return json;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
 export const updateFoodByName = async (token, newFood) => {
   try {
     let response = await fetch(url + '/food/update', {
@@ -91,6 +118,9 @@ export const updateFoodByName = async (token, newFood) => {
       body: JSON.stringify({
         name: newFood.name,
         cals: newFood.cals,
+        proteinas: newFood.proteinas,
+        grasas: newFood.grasas,
+        carbs: newFood.carbs,
         type: newFood.type,
       }),
     });
