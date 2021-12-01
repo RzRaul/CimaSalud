@@ -7,7 +7,8 @@ export const colors = {
     primary: '#eef6ef',
     secondary :'#8Ac97a',
     neutro: '#BCDDD4',
-    accent: '#52b265'
+    accent: '#52b265',
+    button: "#79b4c8"
 }
 export default StyleSheet.create({
     mainContainer:{
@@ -75,7 +76,7 @@ export default StyleSheet.create({
     },
     input: {
         fontSize: 20,
-        height: 28,
+        height: 35,
         width: 60,
         margin: 3,
         paddingLeft: 10,
@@ -118,7 +119,7 @@ export default StyleSheet.create({
     },
     buttonBody: {
         alignItems: "center",
-        backgroundColor: "#79b4c8",
+        backgroundColor: colors.button,
         width: 150,
         height: 35,
         padding: 10,

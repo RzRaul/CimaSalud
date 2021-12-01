@@ -84,69 +84,6 @@ const Goals = ({navigation}) => {
     setEditing(!editing);
   }
 
-  const DisplayGoals = () => {
-    let myStyle = { width: 150, height: 28, marginTop: 2 };
-    if (editing)
-      return (
-        <View>
-          <TextInput
-            style={[styles.input, myStyle]}
-            keyboardType='numeric'
-            placeholder='Calorias'
-            value={goals.cals.toString()}
-            onChangeText={(texto) =>
-              setGoals({ ...goals, cals: Number(texto) })
-            }
-          />
-          <TextInput
-            style={[styles.input, myStyle]}
-            keyboardType='numeric'
-            placeholder='Proteinas'
-            value={goals.proteins.toString()}
-            onChangeText={(texto) =>
-              setGoals({ ...goals, proteins: Number(texto) })
-            }
-          />
-          <TextInput
-            style={[styles.input, myStyle]}
-            keyboardType='numeric'
-            placeholder='Carbohidratos'
-            value={goals.carbs.toString()}
-            onChangeText={(texto) =>
-              setGoals({ ...goals, carbs: Number(texto) })
-            }
-          />
-          <TextInput
-            style={[styles.input, myStyle]}
-            keyboardType='numeric'
-            placeholder='Grasas'
-            value={goals.grasas.toString()}
-            onChangeText={(texto) =>
-              setGoals({ ...goals, grasas: Number(texto) })
-            }
-          />
-        </View>
-      );
-    else
-      return (
-        <View style={{ flexDirection: 'row', flex: 1 }}>
-          <View>
-            {userInfo.map((item, i) => (
-              <Text style={styles.textBody} key={i}>
-                {item.text}
-              </Text>
-            ))}
-          </View>
-          <View>
-            {userInfo.map((info, i) => (
-              <Text style={styles.textBody} key={i}>
-                {info.meta} g
-              </Text>
-            ))}
-          </View>
-        </View>
-      );
-  };
 
   const ListItem = ({ item }) => {
     return (
@@ -215,7 +152,62 @@ const Goals = ({navigation}) => {
             <View style={{ paddingRight: 15 }}>
               <Ionicons name='fitness-outline' size={100} color='black' />
             </View>
-            <DisplayGoals />
+            {editing?
+              <View>
+                <TextInput
+                  style={[styles.input]}
+                  keyboardType='numeric'
+                  placeholder='Calorias'
+                  value={goals.cals.toString()}
+                  onChangeText={(texto) =>
+                    setGoals({ ...goals, cals: Number(texto) })
+                  }
+                />
+                <TextInput
+                  style={[styles.input]}
+                  keyboardType='numeric'
+                  placeholder='Proteinas'
+                  value={goals.proteins.toString()}
+                  onChangeText={(texto) =>
+                    setGoals({ ...goals, proteins: Number(texto) })
+                  }
+                />
+                <TextInput
+                  style={[styles.input]}
+                  keyboardType='numeric'
+                  placeholder='Carbs'
+                  value={goals.carbs.toString()}
+                  onChangeText={(texto) =>
+                    setGoals({ ...goals, carbs: Number(texto) })
+                  }
+                />
+                <TextInput
+                  style={[styles.input]}
+                  keyboardType='numeric'
+                  placeholder='Grasas'
+                  value={goals.grasas.toString()}
+                  onChangeText={(texto) =>
+                    setGoals({ ...goals, grasas: Number(texto) })
+                  }
+                />
+              </View>:
+              <View style={{ flexDirection: 'row', flex: 1 }}>
+                <View>
+                  {userInfo.map((item, i) => (
+                    <Text style={styles.textBody} key={i}>
+                      {item.text}
+                    </Text>
+                  ))}
+                </View>
+                <View>
+                  {userInfo.map((info, i) => (
+                    <Text style={styles.textBody} key={i}>
+                      {info.meta} g
+                    </Text>
+                  ))}
+                </View>
+              </View>
+            }
           </View>
         </View>
 
