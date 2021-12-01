@@ -13,7 +13,7 @@ const Goals = ({navigation}) => {
   const {loginState, globalFuncs} = React.useContext(AuthContext);
   const token = loginState.userToken;
   let metas = loginState.metas;
-  console.log('JSON.stringify(metas) = ',JSON.stringify(metas));
+  //console.log('JSON.stringify(metas) = ',JSON.stringify(metas));
   const [editing, setEditing] = useState(false);
 
   const [today, setToday] = useState(null);

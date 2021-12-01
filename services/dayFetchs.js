@@ -54,7 +54,7 @@ export const getMyDays = async (token) => {
 	}
  };
 
- export const updateDayBreakFast = async (token, fecha, breakFast) => {
+ export const updateDayBreakFast = async (token, fecha, foodId) => {
 	try {
 	  let response = await fetch(url + '/days/updateBreakFast', {
 		 method: 'POST',
@@ -66,8 +66,8 @@ export const getMyDays = async (token) => {
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({
-			date: fecha,
-			breakFast
+			fecha,
+			desayuno:foodId
 		 }),
 	  });
 	  let json = await response.json();
@@ -78,7 +78,7 @@ export const getMyDays = async (token) => {
 	}
  };
 
- export const updateDayLunch = async (token, fecha, lunch) => {
+ export const updateDayLunch = async (token, fecha, foodId) => {
 	try {
 	  let response = await fetch(url + '/days/updateLunch', {
 		 method: 'POST',
@@ -90,8 +90,8 @@ export const getMyDays = async (token) => {
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({
-			date: fecha,
-			lunch
+			fecha,
+			almuerzo:foodId
 		 }),
 	  });
 	  let json = await response.json();
@@ -102,7 +102,7 @@ export const getMyDays = async (token) => {
 	}
  };
 
- export const updateDayDinner = async (token, fecha, dinner) => {
+ export const updateDayDinner = async (token, fecha, foodId) => {
 	try {
 	  let response = await fetch(url + '/days/updateDinner', {
 		 method: 'POST',
@@ -114,8 +114,8 @@ export const getMyDays = async (token) => {
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({
-			date: fecha,
-			dinner
+			fecha,
+			cena:foodId
 		 }),
 	  });
 	  let json = await response.json();
@@ -126,7 +126,7 @@ export const getMyDays = async (token) => {
 	}
  };
 
- export const updateDaySnacks = async (token, fecha, snacks) => {
+ export const updateDaySnacks = async (token, fecha, foodId) => {
 	try {
 	  let response = await fetch(url + '/days/updateSnacks', {
 		 method: 'POST',
@@ -137,8 +137,8 @@ export const getMyDays = async (token) => {
 			Authorization: 'Bearer ' + token,
 		 },
 		 body: JSON.stringify({
-			date: fecha,
-			snacks
+			fecha,
+			snacks: foodId
 		 }),
 	  });
 	  let json = await response.json();

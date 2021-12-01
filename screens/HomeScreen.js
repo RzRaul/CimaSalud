@@ -1,19 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import {
     Alert,
     Button,
     Text,
     View,
+    Modal,
     Image,
+    Pressable,
     TextInput,
     ScrollView,
     Touchable,
+    SafeAreaView,
+    Dimensions
 } from 'react-native';
+import { url } from '../services/jsonServer';
+import { Picker } from '@react-native-picker/picker';
 import { ProgressChart } from 'react-native-chart-kit';
-
 import { AuthContext } from '../utils/AuthContext';
 import * as DayFuncs from '../services/dayFetchs';
+import * as FoodFuncs from '../services/foodFetchs';
 import * as Dates from '../utils/Dates';
 import { TouchableImg } from '../utils/components';
 import styles, { colors, fonts } from '../styles/styles';
@@ -25,11 +31,19 @@ import {
     Roboto_300Light_Italic,
 } from '@expo-google-fonts/roboto';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {
+    AutocompleteDropdown
+} from 'react-native-autocomplete-dropdown';
+import Food from './FoodScreen';
 
 const Home = ({ navigation }) => {
     const { loginState, globalFuncs } = React.useContext(AuthContext);
     const token = loginState.userToken;
     const metas = loginState.metas;
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedMeal, setSelectedMeal] = useState('desayuno');
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [foodNames, setFoodNames] = useState(null);
     let [fontsLoaded] = useFonts({
         light: Roboto_300Light,
         regular: Roboto_500Medium,
@@ -41,7 +55,6 @@ const Home = ({ navigation }) => {
         showDinner: false,
         showSnacks: false,
     });
-
     const [today, setToday] = useState(null);
     const [userInfo, setUserInfo] = useState([
         { text: 'Calorias', val: 0, meta: 0 },
@@ -49,23 +62,39 @@ const Home = ({ navigation }) => {
         { text: 'Carbs', val: 0, meta: 0 },
         { text: 'Grasas', val: 0, meta: 0 },
     ]);
-
+    
+    
     const getInfo = async () => {
+        let i=0;
+        const items = await FoodFuncs.getFoodAllNames(token);
+        const suggestions = items.map((item) => ({
+            id: item._id,
+            title: item.name
+        }));
+        
+
         let dayTemp = await DayFuncs.getDayByDate(token, Dates.getToday());
-        let cals = proteinas = grasas = carbs = 0;
+        let cals = (proteinas = grasas = carbs = 0);
         setToday(dayTemp);
+        setFoodNames((suggestions));
 
-        let foods = dayTemp? dayTemp.desayuno.concat(dayTemp.almuerzo,dayTemp.cena,dayTemp.snacks): [];
+        let foods = dayTemp
+            ? dayTemp.desayuno.concat(
+                  dayTemp.almuerzo,
+                  dayTemp.cena,
+                  dayTemp.snacks
+              )
+            : [];
 
-        if(foods == 0){
-            console.log('foods is [] in getInfo');
+        if (foods == 0) {
+            //console.log('foods is [] in getInfo');
             setUserInfo([
-                {text: 'Calorias', val: 0, meta: metas.cals},
-                {text: 'Proteinas', val: 0, meta: metas.proteinas},
-                {text: 'Carbohidratos', val: 0, meta: metas.carbs},
-                {text: 'Grasas', val: 0, meta: metas.grasas},
+                { text: 'Calorias', val: 0, meta: metas.cals },
+                { text: 'Proteinas', val: 0, meta: metas.proteinas },
+                { text: 'Carbs', val: 0, meta: metas.carbs },
+                { text: 'Grasas', val: 0, meta: metas.grasas },
             ]);
-            return ;
+            return;
         }
 
         for (const food of foods) {
@@ -76,22 +105,27 @@ const Home = ({ navigation }) => {
         }
 
         setUserInfo([
-            {text: 'Calorias', val: cals, meta: metas.cals},
-            {text: 'Proteinas', val: proteinas, meta: metas.proteinas},
-            {text: 'Carbs', val: carbs, meta: metas.carbs},
-            {text: 'Grasas', val: grasas, meta: metas.grasas},
-
+            { text: 'Calorias', val: cals, meta: metas.cals },
+            { text: 'Proteinas', val: proteinas, meta: metas.proteinas },
+            { text: 'Carbs', val: carbs, meta: metas.carbs },
+            { text: 'Grasas', val: grasas, meta: metas.grasas },
         ]);
+
         return;
     };
 
-    React.useEffect(() => {
-        console.log('running React.useEffect');
+    React.useEffect(() => {        
+        //console.log('running React.useEffect');
         getInfo();
-    },[]);
+    }, []);
 
     const logOutHandler = () => {
         globalFuncs.signOut();
+    };
+
+    const addFood = () => {
+        setModalVisible(!modalVisible);
+        navigation.navigate('Food');
     };
     const viewItems = (title) => {
         switch (title) {
@@ -188,7 +222,7 @@ const Home = ({ navigation }) => {
 
     const DayFoods = () => {
         return (
-            <View style={(styles.container, { marginBottom:15 })}>
+            <View style={(styles.container, { marginBottom: 15 })}>
                 <TitleWithBody
                     obj={{
                         title: 'Desayuno',
@@ -220,7 +254,37 @@ const Home = ({ navigation }) => {
             </View>
         );
     };
+    const handleAdd= async () => {
+        setModalVisible(!modalVisible);
+        if(!today){
+            await DayFuncs.postDay(token,{
+                desayuno:[],
+                almuerzo:[],
+                cena:[],
+                snacks:[]
+            });
+        }
 
+        //console.log(selectedItem.id +' -> ' + selectedItem.title);
+        switch (selectedMeal) {
+            case 'desayuno':
+                await DayFuncs.updateDayBreakFast(token,Dates.getToday(),selectedItem.id);              
+                break;
+            case 'almuerzo':
+                await DayFuncs.updateDayLunch(token,Dates.getToday(),selectedItem.id);              
+                break;
+            case 'cena':
+                await DayFuncs.updateDayDinner(token,Dates.getToday(),selectedItem.id);              
+                break;
+            case 'snack':
+                await DayFuncs.updateDaySnacks(token,Dates.getToday(),selectedItem.id);              
+                break;
+        
+            default:
+                break;
+        }
+        getInfo();
+    };
     const UserGraph = () => {
         const userData = {
             labels: userInfo.map((item) => item.text),
@@ -251,7 +315,7 @@ const Home = ({ navigation }) => {
             />
         );
     };
-    
+
     if (!fontsLoaded) {
         return null;
     } else {
@@ -281,7 +345,7 @@ const Home = ({ navigation }) => {
                             <View>
                                 {userInfo.map((info, i) => (
                                     <Text style={styles.textBody2} key={i}>
-                                        {info.val} g
+                                        {info.val}
                                     </Text>
                                 ))}
                             </View>
@@ -289,7 +353,12 @@ const Home = ({ navigation }) => {
                     </View>
 
                     <DayFoods />
-                    <View style={{ flexDirection: 'row', justifyContent:'space-evenly' }}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-evenly',
+                        }}
+                    >
                         <TouchableImg
                             width={80}
                             text='Registrar consumo'
@@ -297,7 +366,9 @@ const Home = ({ navigation }) => {
                             size={35}
                             color={colors.accent}
                             img={null}
-                            onPress={() => null}
+                            onPress={() => {
+                                setModalVisible(!modalVisible);
+                            }}
                         />
                         <TouchableImg
                             width={130}
@@ -306,10 +377,89 @@ const Home = ({ navigation }) => {
                             size={35}
                             color={colors.accent}
                             img={null}
-                            onPress={() => null}
+                            onPress={globalFuncs.signOut}
                         />
                     </View>
+                    
                 </ScrollView>
+
+                <Modal
+                    animationType='slide'
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        Alert.alert('No se guardó nada');
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>                                  
+                           
+                            <Text style={styles.modalText}>
+                                Selecciona el tipo de comida:
+                            </Text>
+                            <Picker
+                                selectedValue={selectedMeal}
+                                onValueChange={(itemValue, itemIndex) =>
+                                    setSelectedMeal(itemValue)
+                                }
+                                style={styles.dropDown}
+                                mode='dropdown'
+                            >
+                                <Picker.Item
+                                    label='Desayuno'
+                                    value='desayuno'
+                                />
+                                <Picker.Item
+                                    label='Almuerzo'
+                                    value='almuerzo'
+                                />
+                                <Picker.Item label='Cena' value='cena' />
+                                <Picker.Item label='Snacks' value='snack' />
+                            </Picker>
+                            <Text style={styles.modalText}>
+                                Elige el alimento
+                            </Text>
+                            <AutocompleteDropdown
+                                    containerStyle={styles.autocompletesContainer}
+                                    textInputProps={{
+                                        placeholder: "ej. Cheetos",
+                                        autoCorrect: false,
+                                        autoCapitalize: "none",
+
+                                      }}
+                                        clearOnFocus={false}
+                                        closeOnBlur={true}
+                                        
+                                        onSelectItem={setSelectedItem}
+                                        dataSet={foodNames}
+                                    />
+
+                            <Pressable
+                                style={[
+                                    styles.button,
+                                    styles.buttonAccept,
+                                    { marginBottom: 40 },
+                                ]}
+                                onPress={()=>handleAdd()}
+                            >
+                                <Text style={styles.textStyle}>Aceptar</Text>
+                            </Pressable>
+
+                            <Text style={styles.modalText}>
+                                ¿No se encuentra tu alimento? Agrégalo
+                            </Text>
+                            <Pressable
+                                style={[styles.button, styles.buttonClose]}
+                                onPress={addFood}
+                            >
+                                <Text style={styles.textStyle}>
+                                    Agregar alimento
+                                </Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </Modal>
             </View>
         );
     }
