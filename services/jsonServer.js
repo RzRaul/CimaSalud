@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const url = 'http://dc7e-2806-1000-8003-2cd2-99bb-863f-3010-4da0.ngrok.io';
+export const url = 'http://c31f-2806-1000-8003-45e4-9504-aa73-e41-ecf8.ngrok.io';
 
 export default axios.create({
     baseURL: url

@@ -62,7 +62,7 @@ const Home = ({ navigation }) => {
             setUserInfo([
                 {text: 'Calorias', val: 0, meta: metas.cals},
                 {text: 'Proteinas', val: 0, meta: metas.proteinas},
-                {text: 'Carbohidratos', val: 0, meta: metas.carbs},
+                {text: 'Carbs', val: 0, meta: metas.carbs},
                 {text: 'Grasas', val: 0, meta: metas.grasas},
             ]);
             return ;
