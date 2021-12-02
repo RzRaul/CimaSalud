@@ -86,6 +86,28 @@ export default StyleSheet.create({
         overflow:'hidden',
         borderRadius:10
     },
+    autocompletesContainer: {
+        paddingTop: 0,
+        //elevation:13,
+        //width: "100%",
+        paddingHorizontal: 8,
+        alignSelf: 'stretch'
+        //marginRight:30,
+      },
+    autocompleteView: {
+        paddingTop: 0,
+        elevation:0,
+        alignSelf: 'stretch',
+        //width: "200%",
+        paddingHorizontal: 8,
+        //marginRight:30,
+      },
+    autoCompInput: {
+        fontSize: 16,
+        maxHeight: 60,
+        maxWidth: 80,
+       
+    },
     button: {
         alignItems: "center",
         backgroundColor: "#FFFFFF",
@@ -110,5 +132,50 @@ export default StyleSheet.create({
         marginBottom:20, 
         borderRadius:10,
         overflow:'hidden'
-    }
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        marginTop: 25,
+      },
+      dropDown:{
+          width:180,
+        fontSize:15,
+        marginBottom:30,
+      },
+      modalView: {
+        margin: 15,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 30,
+        alignItems: 'center',
+        shadowColor: '#000',
+        // shadowOffset: {
+        //   width: 0,
+        //   height: 2,
+        // },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+      },
+      buttonOpen: {
+        backgroundColor: '#F194FF',
+      },
+      buttonClose: {
+        backgroundColor: '#2196F3',
+      },
+      buttonAccept:{
+        backgroundColor: '#52b265'
+      },
+      textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+        fontSize:18,
+      },
 });

@@ -17,6 +17,21 @@ export const getFoodAll = async (token) => {
     return null;
   }
 };
+export const getFoodAllNames = async (token) => {
+  try {
+    let response = await fetch(url + '/food/all/names', {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    });
+    let json = await response.json();
+    return json;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
 export const getFoodByCode = async (token, code) => {
   try {
     let response = await fetch(url + '/food/barcode/' + code, {
