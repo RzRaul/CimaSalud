@@ -1,7 +1,10 @@
-import React, {useContext, useEffect, useState} from 'react';
-import { Alert, Modal, ScrollView, Text, View } from 'react-native';
+import React, {useContext, useEffect, useState, useRef} from 'react';
+import { Alert, Modal, PermissionsAndroid, Pressable, ScrollView, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import   { Calendar } from 'react-native-calendars';
+import { captureRef } from "react-native-view-shot";
+import * as MediaLibrary from 'expo-media-library';
+import * as Sharing from 'expo-sharing';
 
 import { AuthContext } from '../utils/AuthContext';
 import * as DayFuncs from '../services/dayFetchs';
@@ -31,8 +34,19 @@ const More = ({navigation}) => {
         showSnacks: false,
     });
     const [modalVisible, setModalVisible] = useState(false);
-    
 
+    const [day, setDay] = useState(null);
+    const [markedDates,setMarkedDates] = useState(null);
+    const [week, setWeek] = useState(null);
+    // to save view to img
+    const viewRef = useRef();
+
+    React.useEffect(()=>{
+        console.log('running React.useEffect');
+        updateDay(Dates.getToday());
+        getMarkedDates();
+    },[]);
+    
     const updateDay = async (date) => {
         let dayTemp = await DayFuncs.getDayByDate(token, date);
         console.log('date = '+date+' updateDay = '+dayTemp);
@@ -47,15 +61,6 @@ const More = ({navigation}) => {
         if(days)
             days.forEach((day) => {dates[day.fecha.replace("T00:00:00.000Z", "")] = {marked:true} });
     }
-
-    const [day, setDay] = useState(null);
-    const [markedDates,setMarkedDates] = useState(null);
-
-    React.useEffect(()=>{
-        console.log('running React.useEffect');
-        updateDay(Dates.getToday());
-        getMarkedDates();
-    },[]);
 
     const createTwoButtonAlert = () =>
     Alert.alert(
@@ -125,6 +130,7 @@ const More = ({navigation}) => {
     };
 
     const TitleWithBody = ({ obj }) => {
+        console.log('TitleWithBody obj = ', obj);
         if (fontsLoaded)
             return (
                 <TouchableOpacity
@@ -164,7 +170,7 @@ const More = ({navigation}) => {
         else return null;
     };
 
-    const DayFoods = (day) => {
+    const DayFoods = ({day}) => {
         return (
             <View style={(styles.container, { marginBottom:15 })}>
                 <TitleWithBody
@@ -202,14 +208,83 @@ const More = ({navigation}) => {
     const WeeklyReport = () => {
         return ( 
             <View>
-                { week.map( day => <DayFoods day={day} /> ) }
-            </View> );
+                <View ref={viewRef} style={{backgroundColor:'#ffffff'}}>
+                    <Text style={styles.textHeader}>Reporte Semanal</Text>
+                    { week.map( day => <DayFoods day={day} /> ) }
+                </View>
+                <Pressable
+                    style = {styles.buttonBody}
+                    onPress = {downloadImage}
+                >
+                    <Text style = {{color:'#ffffff'}}>Guardar</Text>
+                </Pressable>
+                <Pressable
+                    style = {styles.buttonBody}
+                    onPress = {shareImage}
+                >
+                    <Text style = {{color:'#ffffff'}}>Compartir</Text>
+                </Pressable>
+                <Pressable
+                    style = {styles.buttonBody}
+                    onPress = {() => {
+                        setModalVisible(false);
+                        console.log('Modal closed');}}
+                >
+                    <Text style = {{color:'#ffffff'}}>Cerrar</Text>
+                </Pressable>
+            </View> 
+        );
     }
+        // download image
+    const downloadImage = async () => {
+        try {
+            // capture component 
+            const uri = await captureRef(viewRef, {
+                format: 'png',
+                quality: 0.8,
+            });
 
+            if (Platform.OS === 'android') {
+                const granted = await MediaLibrary.requestPermissionsAsync();
+                console.log(granted);
+                if (!granted) {
+                return;
+                }
+            }
 
+            // cameraroll saves image
+            const image = MediaLibrary.createAssetAsync(uri);
+            if (image) {
+                Alert.alert(
+                '',
+                'Image saved successfully.',
+                [{text: 'OK', onPress: () => {}}],
+                {cancelable: false},
+                );
+            }
+        } catch (error) {
+            console.log('error', error);
+        }
+    };
+
+    const shareImage = async () => {
+        try {
+          // capture component 
+          const uri = await captureRef(viewRef, {
+            format: 'png',
+            quality: 0.8,
+          });
+    
+          // share
+          const shareResponse = await Sharing.shareAsync(uri);
+        } catch (error) {
+          console.log('error', error);
+        }
+      };
 
     return (
         <View style={styles.mainContainer}>
+            
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -218,8 +293,12 @@ const More = ({navigation}) => {
                 Alert.alert('Modal has been closed.');
                 setModalVisible(!modalVisible);
             }}>
-                <View>
-                    <WeeklyReport />
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <ScrollView >
+                            <WeeklyReport />
+                        </ScrollView>
+                    </View>
                 </View>
             </ Modal>
             <ScrollView style = {{margin: 5, paddingTop:10}}>
@@ -235,7 +314,9 @@ const More = ({navigation}) => {
                     <TouchableOpacity
                         style = {styles.buttonBody}
                         onPress = { async () => {
-                            //let week = await DayFuncs.getInfoByRange(token, day, '-7'); // fix when there the func exists
+                            //let temp = await DayFuncs.getInfoByRange(token, day, '-7'); // fix when there the func exists
+                            //setWeek(temp);
+                            setWeek([]);
                             setModalVisible(true);
                         }}
                     >
@@ -243,7 +324,13 @@ const More = ({navigation}) => {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style = {styles.buttonBody}
-                        onPress = {createTwoButtonAlert}
+                        onPress = {() => Alert.alert(
+                            "Contactanos por",
+                            "664-123-4567\ncimahealth@gmail.com",
+                            [
+                              { text: "OK", onPress: () => console.log("OK Pressed") }
+                            ]
+                          )}
                     >
                         <Text style = {{color:'#ffffff'}}>Contactanos</Text>
                     </TouchableOpacity>

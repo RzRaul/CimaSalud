@@ -17,6 +17,8 @@
     "axios": "^0.23.0",
     "expo": "~42.0.1",
     "expo-barcode-scanner": "~10.2.2",
+    "expo-media-library": "~12.1.2",
+    "expo-sharing": "~9.2.1",
     "expo-status-bar": "~1.0.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
@@ -27,7 +29,6 @@
     "react-native-safe-area-context": "3.2.0",
     "react-native-scan-barcode": "^3.1.7",
     "react-native-screens": "~3.4.0",
-    "react-native-share": "^7.3.2",
     "react-native-view-shot": "3.1.2",
     "react-native-web": "~0.13.12"
   },
