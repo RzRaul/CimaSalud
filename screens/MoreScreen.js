@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { Alert, Button, ScrollView, Text, View } from 'react-native';
+import { Alert, Modal, ScrollView, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import   { Calendar } from 'react-native-calendars';
 
@@ -30,6 +30,7 @@ const More = ({navigation}) => {
         showDinner: false,
         showSnacks: false,
     });
+    const [modalVisible, setModalVisible] = useState(false);
     
 
     const updateDay = async (date) => {
@@ -163,7 +164,7 @@ const More = ({navigation}) => {
         else return null;
     };
 
-    const DayFoods = () => {
+    const DayFoods = (day) => {
         return (
             <View style={(styles.container, { marginBottom:15 })}>
                 <TitleWithBody
@@ -198,8 +199,29 @@ const More = ({navigation}) => {
         );
     };
 
+    const WeeklyReport = () => {
+        return ( 
+            <View>
+                { week.map( day => <DayFoods day={day} /> ) }
+            </View> );
+    }
+
+
+
     return (
         <View style={styles.mainContainer}>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                Alert.alert('Modal has been closed.');
+                setModalVisible(!modalVisible);
+            }}>
+                <View>
+                    <WeeklyReport />
+                </View>
+            </ Modal>
             <ScrollView style = {{margin: 5, paddingTop:10}}>
                 <Calendar 
                     onDayPress={ async (date) => {
@@ -207,9 +229,18 @@ const More = ({navigation}) => {
                     }}
                     markedDates = {markedDates}
                 />
-                <DayFoods />
+                <DayFoods day={day}/>
 
                 <View style={{ flex: 1, justifyContent:'space-evenly', alignItems:'center', marginBottom:10 }}>
+                    <TouchableOpacity
+                        style = {styles.buttonBody}
+                        onPress = { async () => {
+                            //let week = await DayFuncs.getInfoByRange(token, day, '-7'); // fix when there the func exists
+                            setModalVisible(true);
+                        }}
+                    >
+                        <Text style = {{color:'#ffffff'}}>Reporte Semanal</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity
                         style = {styles.buttonBody}
                         onPress = {createTwoButtonAlert}
