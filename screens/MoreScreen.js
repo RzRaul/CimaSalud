@@ -9,6 +9,7 @@ import * as Sharing from 'expo-sharing';
 import { AuthContext } from '../utils/AuthContext';
 import * as DayFuncs from '../services/dayFetchs';
 import * as Dates from '../utils/Dates';
+import { PressableImg } from '../utils/components';
 import styles, { colors } from '../styles/styles';
 import {
     useFonts,
@@ -61,20 +62,6 @@ const More = ({navigation}) => {
         if(days)
             days.forEach((day) => {dates[day.fecha.replace("T00:00:00.000Z", "")] = {marked:true} });
     }
-
-    const createTwoButtonAlert = () =>
-    Alert.alert(
-      "Contactanos por",
-      "664-123-4567\ncimahealth@gmail.com",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "OK", onPress: () => console.log("OK Pressed") }
-      ]
-    );
 
     const viewItems = (title) => {
         switch (title) {
@@ -130,7 +117,6 @@ const More = ({navigation}) => {
     };
 
     const TitleWithBody = ({ obj }) => {
-        console.log('TitleWithBody obj = ', obj);
         if (fontsLoaded)
             return (
                 <TouchableOpacity
@@ -205,33 +191,147 @@ const More = ({navigation}) => {
         );
     };
 
+    const ItemReport = ({ food }) => {
+        if (fontsLoaded)
+            return (
+                <View style={(styles.ListCard,{
+                    padding:10, 
+                    backgroundColor: colors.primary, 
+                    marginBottom:10
+                })}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Text style={{ fontFamily: 'light', fontSize: 18 }}>
+                            {food.name}
+                        </Text>
+                    </View>
+                    <View style={{
+                        paddingHorizontal: '10%',
+                        flexWrap: 'wrap',
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                    }}>
+                        <Text style={(styles.textBody,{fontSize:16})}>
+                            Calorias: {food.cals}
+                        </Text>
+                        <Text style={(styles.textBody,{fontSize:16})}>
+                            Proteinas: {food.proteinas}
+                        </Text>
+                        <Text style={(styles.textBody,{fontSize:16})}>Carbs: {food.carbs}</Text>
+                        <Text style={(styles.textBody,{fontSize:16})}>
+                            Grasas: {food.grasas}
+                        </Text>
+                    </View>
+                </View>
+            );
+        else return null;
+    };
+
+    const FoodReport = ({ obj }) => {
+        if (fontsLoaded)
+            return (
+                <View
+                    style={[
+                        styles.containerBody,
+                    ]}
+                >
+                    <Text
+                        style={{
+                            fontFamily: 'regular',
+                            fontSize: 20,
+                            marginVertical: 10,
+                            flex: 1,
+                        }}
+                    >
+                        {obj.title}
+                    </Text>
+
+                    {obj.body.length != 0 ? (
+                        obj.body.map( (food, i) => <ItemReport food={food} key={i} /> ) ) : 
+                        ( <Text>No Hay Datos</Text> )
+                    }
+                </View>
+            );
+        else return null;
+    };
+
+    const DayReport = ({day}) => {
+        return(
+            <View style={{ justifyContent: 'center' }}>
+                <Text style={(styles.textBody,{fontSize: 25, fontWeight: 'bold'})}>
+                    {day.fecha.replace('T00:00:00.000Z','')}
+                </Text>
+                <FoodReport
+                    obj={{
+                        title: 'Desayuno',
+                        body: day ? day.desayuno : [],
+                    }}
+                />
+                <FoodReport
+                    obj={{
+                        title: 'Almuerzo',
+                        body: day ? day.almuerzo : [],
+                    }}
+                />
+                <FoodReport
+                    obj={{
+                        title: 'Cena',
+                        body: day ? day.cena : [],
+                    }}
+                />
+                <FoodReport
+                    obj={{
+                        title: 'Snacks',
+                        body: day ? day.snacks : [],
+                    }}
+                />
+            </View>
+        );
+    }
+
     const WeeklyReport = () => {
         return ( 
             <View>
                 <View ref={viewRef} style={{backgroundColor:'#ffffff'}}>
                     <Text style={styles.textHeader}>Reporte Semanal</Text>
-                    { week.map( day => <DayFoods day={day} /> ) }
+                    { week.map( (day, i) => <DayReport day={day} key={i} /> ) }
                 </View>
-                <Pressable
-                    style = {styles.buttonBody}
-                    onPress = {downloadImage}
-                >
-                    <Text style = {{color:'#ffffff'}}>Guardar</Text>
-                </Pressable>
-                <Pressable
-                    style = {styles.buttonBody}
-                    onPress = {shareImage}
-                >
-                    <Text style = {{color:'#ffffff'}}>Compartir</Text>
-                </Pressable>
-                <Pressable
-                    style = {styles.buttonBody}
-                    onPress = {() => {
-                        setModalVisible(false);
-                        console.log('Modal closed');}}
-                >
-                    <Text style = {{color:'#ffffff'}}>Cerrar</Text>
-                </Pressable>
+                <View style={{flexDirection:'row'}}>
+                    <PressableImg
+                        width={80}
+                        text=''
+                        name='download-outline'
+                        size={30}
+                        color='black'
+                        img={null}
+                        onPress={downloadImage}
+                    />
+                    <PressableImg
+                        width={80}
+                        text=''
+                        name='close-circle'
+                        size={30}
+                        color='black'
+                        img={null}
+                        onPress={() => {
+                            setModalVisible(false);
+                            console.log('Modal closed');}}
+                    />
+                    <PressableImg
+                        width={80}
+                        text=''
+                        name='share-social-outline'
+                        size={30}
+                        color='black'
+                        img={null}
+                        onPress={shareImage}
+                    />
+                </View>
+                
             </View> 
         );
     }
@@ -314,9 +414,9 @@ const More = ({navigation}) => {
                     <TouchableOpacity
                         style = {styles.buttonBody}
                         onPress = { async () => {
-                            //let temp = await DayFuncs.getInfoByRange(token, day, '-7'); // fix when there the func exists
-                            //setWeek(temp);
-                            setWeek([]);
+                            let temp = await DayFuncs.getWeekByDate(token, Dates.getToday()); // fix when there the func exists
+                            setWeek(temp);
+                            console.log('week = ',temp);
                             setModalVisible(true);
                         }}
                     >
@@ -326,10 +426,7 @@ const More = ({navigation}) => {
                         style = {styles.buttonBody}
                         onPress = {() => Alert.alert(
                             "Contactanos por",
-                            "664-123-4567\ncimahealth@gmail.com",
-                            [
-                              { text: "OK", onPress: () => console.log("OK Pressed") }
-                            ]
+                            "664-123-4567\ncimahealth@gmail.com"
                           )}
                     >
                         <Text style = {{color:'#ffffff'}}>Contactanos</Text>

@@ -34,6 +34,23 @@ export const getMyDays = async (token) => {
 	}
  };
 
+ export const getWeekByDate = async (token, fecha) => {
+	try {
+	  let response = await fetch(url + '/days/week/'+fecha, {
+		 method: 'GET',
+		 headers: {
+			'Access-Control-Allow-Origin': '*',
+			Authorization: 'Bearer ' + token,
+		 }
+	  });
+	  let json = await response.json();
+	  return json;
+	} catch (error) {
+	  console.log(error);
+	  return null;
+	}
+ };
+
  export const postDay = async (token, day) => {
 	try {
 	  let response = await fetch(url + '/days', {
