@@ -390,7 +390,7 @@ const More = ({navigation}) => {
                 transparent={true}
                 visible={modalVisible}
                 onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
+                //Alert.alert('');
                 setModalVisible(!modalVisible);
             }}>
                 <View style={styles.centeredView}>

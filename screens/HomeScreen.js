@@ -1,19 +1,6 @@
 import React, { useEffect, useState,useCallback } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import {
-    Alert,
-    Button,
-    Text,
-    View,
-    Modal,
-    Image,
-    Pressable,
-    TextInput,
-    ScrollView,
-    Touchable,
-    SafeAreaView,
-    Dimensions
-} from 'react-native';
+import { Alert, Button, Text,View, Modal,Image, Pressable,TextInput,ScrollView} from 'react-native';
 import { url } from '../services/jsonServer';
 import { Picker } from '@react-native-picker/picker';
 import { ProgressChart } from 'react-native-chart-kit';
