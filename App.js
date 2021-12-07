@@ -93,7 +93,7 @@ const TabsScreen = () =>(
     })}
   >
    <Tabs.Group
-    screenOptions={{headerShown:false}}
+    screenOptions={{headerShown:false,  unmountOnBlur: true}}
   >
     <Tabs.Screen name="Home" component={HomeScreen} />
     <Tabs.Screen name="Food" component={FoodScreen} />
@@ -130,10 +130,13 @@ function App() {
       },
       updateGoals: async (usertoken, metas) => {
         let goals = await UserFuncs.updateUserGoals(usertoken, metas);
-        dispatch({type: 'updateMetas', metas:goals});
+        dispatch({type: 'updateMetas', metas});
       },
       getState:()=>{
         return loginState;
+      },
+      updateScreens:async ()=>{
+        dispatch({type: 'update', updateScreens:!loginState.updateScreens});
       }
    }), []);
   React.useEffect(()=>{

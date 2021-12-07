@@ -36,10 +36,10 @@ const Goals = ({navigation}) => {
     let cals = proteinas = grasas = carbs = 0;
     setToday(dayTemp);
     const state = await globalFuncs.getState();
-    console.log('func getState.meta', state);
+    //console.log('func getState.meta', state);
     let foods = dayTemp? dayTemp.desayuno.concat(dayTemp.almuerzo,dayTemp.cena,dayTemp.snacks): [];
 
-    console.log('in GoaScreen getInfo metas = ',metas);
+    //console.log('in GoaScreen getInfo metas = ',metas);
     setGoals(metas);
 
     if(foods == 0){
@@ -72,14 +72,14 @@ const Goals = ({navigation}) => {
   }
 
   React.useEffect(()=>{
-    console.log('running React.useEffect in GoalScreen');
+    //console.log('running React.useEffect in GoalScreen');
     getInfo();
-  },[update]);
+  },[update, loginState.updateScreen]);
     
-  const editHandler = () => {
+  const editHandler = async () => {
     if(editing){
-      globalFuncs.updateGoals(token, goals);
-      console.log('updateGoals to = ',goals);
+      await globalFuncs.updateGoals(token, goals);
+      //console.log('updateGoals to = ',goals);
       setUpdate(!update);
     }
     setEditing(!editing);

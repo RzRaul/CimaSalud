@@ -71,7 +71,7 @@ export const getMyDays = async (token) => {
 	}
  };
 
- export const updateDayBreakFast = async (token, fecha, foodId) => {
+ export const updateDayBreakFast = async (token, fecha, foodId, type='add') => {
 	try {
 	  let response = await fetch(url + '/days/updateBreakFast', {
 		 method: 'POST',
@@ -84,6 +84,7 @@ export const getMyDays = async (token) => {
 		 },
 		 body: JSON.stringify({
 			fecha,
+			type,
 			desayuno:foodId
 		 }),
 	  });
@@ -95,7 +96,7 @@ export const getMyDays = async (token) => {
 	}
  };
 
- export const updateDayLunch = async (token, fecha, foodId) => {
+ export const updateDayLunch = async (token, fecha, foodId, type='add') => {
 	try {
 	  let response = await fetch(url + '/days/updateLunch', {
 		 method: 'POST',
@@ -108,6 +109,7 @@ export const getMyDays = async (token) => {
 		 },
 		 body: JSON.stringify({
 			fecha,
+			type,
 			almuerzo:foodId
 		 }),
 	  });
@@ -119,7 +121,7 @@ export const getMyDays = async (token) => {
 	}
  };
 
- export const updateDayDinner = async (token, fecha, foodId) => {
+ export const updateDayDinner = async (token, fecha, foodId, type='add') => {
 	try {
 	  let response = await fetch(url + '/days/updateDinner', {
 		 method: 'POST',
@@ -132,6 +134,7 @@ export const getMyDays = async (token) => {
 		 },
 		 body: JSON.stringify({
 			fecha,
+			type,
 			cena:foodId
 		 }),
 	  });
@@ -143,7 +146,7 @@ export const getMyDays = async (token) => {
 	}
  };
 
- export const updateDaySnacks = async (token, fecha, foodId) => {
+ export const updateDaySnacks = async (token, fecha, foodId, type='add') => {
 	try {
 	  let response = await fetch(url + '/days/updateSnacks', {
 		 method: 'POST',
@@ -155,6 +158,7 @@ export const getMyDays = async (token) => {
 		 },
 		 body: JSON.stringify({
 			fecha,
+			type,
 			snacks: foodId
 		 }),
 	  });

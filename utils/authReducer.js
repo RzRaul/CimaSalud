@@ -42,16 +42,23 @@ export const loginReducer = (prevState, action)=>{
 					...prevState,
 					metas: action.metas
 				};
+		case 'update':
+				return {
+					...prevState,
+					updateScreens: action.updateScreens
+				};
 		default:
 			break;
 	}
 };
 
 export const initialState = {
+	_id:'',
 	userName: '',
 	userMail:'',
 	userToken: null,
 	isLoading: true,
-	metas:null
+	metas:null,
+	updateScreens:false
 }
 

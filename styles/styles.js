@@ -89,7 +89,7 @@ export default StyleSheet.create({
     autocompletesContainer: {
         paddingTop: 0,
         //elevation:13,
-        //width: "100%",
+        width: 200,
         paddingHorizontal: 8,
         alignSelf: 'stretch'
         //marginRight:30,
@@ -135,9 +135,10 @@ export default StyleSheet.create({
     },
     centeredView: {
         flex: 1,
-        justifyContent: 'space-evenly',
+        justifyContent: 'center',
         alignItems: 'center',
         marginTop: 25,
+        maxHeight:650
       },
       dropDown:{
           width:180,
@@ -150,6 +151,7 @@ export default StyleSheet.create({
         borderRadius: 20,
         padding: 30,
         alignItems: 'center',
+        justifyContent: 'center',
         shadowColor: '#000',
         // shadowOffset: {
         //   width: 0,
@@ -178,4 +180,7 @@ export default StyleSheet.create({
         textAlign: 'center',
         fontSize:18,
       },
+      modalInvCont:{
+        flex:1, alignItems:'center', justifyContent:'center'
+      }
 });

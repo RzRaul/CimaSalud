@@ -1,6 +1,6 @@
 import React, { useEffect, useState,useCallback } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { Alert, Button, Text,View, Modal,Image, Pressable,TextInput,ScrollView} from 'react-native';
+import { Alert, Button, Text,View, Modal,Image, Pressable,TextInput,ScrollView, StyleSheet} from 'react-native';
 import { url } from '../services/jsonServer';
 import { Picker } from '@react-native-picker/picker';
 import { ProgressChart } from 'react-native-chart-kit';
@@ -8,7 +8,7 @@ import { AuthContext } from '../utils/AuthContext';
 import * as DayFuncs from '../services/dayFetchs';
 import * as FoodFuncs from '../services/foodFetchs';
 import * as Dates from '../utils/Dates';
-import { TouchableImg } from '../utils/components';
+import { TouchableImg, PressableImg } from '../utils/components';
 import styles, { colors, fonts } from '../styles/styles';
 import {
     useFonts,
@@ -22,6 +22,7 @@ import {
     AutocompleteDropdown
 } from 'react-native-autocomplete-dropdown';
 import Food from './FoodScreen';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 
 const Home = ({ navigation }) => {
     const { loginState, globalFuncs } = React.useContext(AuthContext);
@@ -36,6 +37,23 @@ const Home = ({ navigation }) => {
         regular: Roboto_500Medium,
         bold: Roboto_700Bold,
     });
+    const [hasPermission, setHasPermission] = useState(null);
+    const [isScanning, setIsScanning] = useState(false);
+
+    useEffect(() => {
+        (async () => {
+        const { status } = await BarCodeScanner.requestPermissionsAsync();
+        setHasPermission(status === 'granted');
+        })();
+    }, []);
+    const handleBarCodeScanned = ({ type, data }) => {
+        setScanned(true);
+        console.log(`Bar code with type ${type} and data ${data} has been scanned!`);
+        // Falta peticion a la base de datos
+        //getFoodByCode(token, data.toString());
+
+        setIsScanning(false);
+    };
     const [showing, setShow] = React.useState({
         showBreakFast: false,
         showLunch: false,
@@ -243,7 +261,8 @@ const Home = ({ navigation }) => {
     const handleAdd= async () => {
         setModalVisible(!modalVisible);
         if(!today){
-            await DayFuncs.postDay(token,{
+            let todayTemp = await DayFuncs.postDay(token,{
+                fecha: Dates.getToday(),
                 desayuno:[],
                 almuerzo:[],
                 cena:[],
@@ -271,13 +290,14 @@ const Home = ({ navigation }) => {
         }
         getInfo();
 
-        if( checkGoals() ) {
+        if( !checkGoals() ) {
             console.log('se ha excedido la meta');
             Alert.alert(
                 '',
                 "Se ha excidido de la meta diaria"
             );
         }
+        globalFuncs.updateScreens();
     };
 
     const checkGoals = () => {
@@ -379,10 +399,7 @@ const Home = ({ navigation }) => {
                             color={colors.accent}
                             img={null}
                             onPress={() => {
-                                Alert.alert(
-                                    'Sugerencia',
-                                    'Pollo con Arroz',
-                                );
+                                Alert.alert('Sugerencia', 'Pollo con Arroz');
                             }}
                         />
                         <TouchableImg
@@ -395,7 +412,6 @@ const Home = ({ navigation }) => {
                             onPress={globalFuncs.signOut}
                         />
                     </View>
-                    
                 </ScrollView>
 
                 <Modal
@@ -405,11 +421,12 @@ const Home = ({ navigation }) => {
                     onRequestClose={() => {
                         Alert.alert('No se guardó nada');
                         setModalVisible(!modalVisible);
+                        setIsScanning(false);
                     }}
                 >
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>                                  
-                           
+                    <View style={[styles.centeredView,{}]}>
+                        <View style={styles.modalView}>
+                            <View style={[styles.modalInvCont,{}]}>
                             <Text style={styles.modalText}>
                                 Selecciona el tipo de comida:
                             </Text>
@@ -432,31 +449,86 @@ const Home = ({ navigation }) => {
                                 <Picker.Item label='Cena' value='cena' />
                                 <Picker.Item label='Snacks' value='snack' />
                             </Picker>
-                            <Text style={styles.modalText}>
-                                Elige el alimento
-                            </Text>
-                            <AutocompleteDropdown
-                                    containerStyle={styles.autocompletesContainer}
-                                    textInputProps={{
-                                        placeholder: "ej. Cheetos",
-                                        autoCorrect: false,
-                                        autoCapitalize: "none",
+                            </View>
+                            
+                                {!isScanning ? (
+                                    <View style={[styles.modalInvCont,{}]}>
+                                        <Text style={styles.modalText}>
+                                            Elige el alimento
+                                        </Text>
 
-                                      }}
-                                        clearOnFocus={false}
-                                        closeOnBlur={true}
-                                        
-                                        onSelectItem={setSelectedItem}
-                                        dataSet={foodNames}
-                                    />
-
+                                        <AutocompleteDropdown
+                                            containerStyle={
+                                                styles.autocompletesContainer
+                                            }
+                                            textInputProps={{
+                                                placeholder: 'ej. Cheetos',
+                                                autoCorrect: false,
+                                                autoCapitalize: 'none',
+                                            }}
+                                            clearOnFocus={false}
+                                            closeOnBlur={true}
+                                            onSelectItem={setSelectedItem}
+                                            dataSet={foodNames}
+                                        />
+                                        <PressableImg
+                                            width={75}
+                                            text='Escanea'
+                                            name='barcode-outline'
+                                            size={40}
+                                            color={colors.accent}
+                                            img={null}
+                                            onPress={() => {
+                                                if (hasPermission === false) {
+                                                    createAlert(
+                                                        'No se tiene acceso a la camara',
+                                                        '',
+                                                        {
+                                                            text: 'Okay',
+                                                            onPress: () =>
+                                                                console.log(
+                                                                    'No se tiene acceso a la camara'
+                                                                ),
+                                                        }
+                                                    );
+                                                    return;
+                                                }
+                                                setIsScanning(!isScanning);
+                                            }}
+                                        />
+                                    </View>
+                                ) : (
+                                    <View
+                                        style={[styles.modalInvCont,{flex:2}]}
+                                    >
+                                        <BarCodeScanner
+                                            onBarCodeScanned={
+                                                handleBarCodeScanned
+                                            }
+                                            style={[
+                                                StyleSheet.absoluteFillObject,
+                                                {}]
+                                            }
+                                        />
+                                        <Pressable
+                                            style={[
+                                                styles.button,{marginBottom:260}
+                                            ]}
+                                            onPress={() => setIsScanning(false)}
+                                        >
+                                            <Text>Cancel</Text>
+                                        </Pressable>
+                                    </View>
+                                )}
+        
+                            <View style={[styles.modalInvCont,{}]}>
                             <Pressable
                                 style={[
                                     styles.button,
                                     styles.buttonAccept,
                                     { marginBottom: 40 },
                                 ]}
-                                onPress={()=>handleAdd()}
+                                onPress={() => handleAdd()}
                             >
                                 <Text style={styles.textStyle}>Aceptar</Text>
                             </Pressable>
@@ -472,6 +544,7 @@ const Home = ({ navigation }) => {
                                     Agregar alimento
                                 </Text>
                             </Pressable>
+                            </View>
                         </View>
                     </View>
                 </Modal>

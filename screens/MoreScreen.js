@@ -60,7 +60,10 @@ const More = ({navigation}) => {
 
 
         if(days)
-            days.forEach((day) => {dates[day.fecha.replace("T00:00:00.000Z", "")] = {marked:true} });
+            days.forEach((day) => {
+                dates[day.fecha.replace("T00:00:00.000Z", "")] = {marked:true} 
+            });
+            setMarkedDates(dates);
     }
 
     const viewItems = (title) => {
