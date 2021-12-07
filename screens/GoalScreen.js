@@ -13,8 +13,8 @@ const Goals = ({navigation}) => {
   const {loginState, globalFuncs} = React.useContext(AuthContext);
   const token = loginState.userToken;
   let metas = loginState.metas;
-  //console.log('JSON.stringify(metas) = ',JSON.stringify(metas));
   const [editing, setEditing] = useState(false);
+  const [update, setUpdate] = useState(false);
 
   const [today, setToday] = useState(null);
   const [userInfo, setUserInfo] = useState([
@@ -31,17 +31,16 @@ const Goals = ({navigation}) => {
   });
 
   const getInfo = async () => {
-    let dayTemp = await DayFuncs.getDayByDate(token, Dates.getToday());
-    if(!metas){
-      let {meta} = await UserFuncs.getUserInfo(token);
-      metas = meta;
-    }    
+    let dayTemp = await DayFuncs.getDayByDate(token, Dates.getToday());  
       
     let cals = proteinas = grasas = carbs = 0;
     setToday(dayTemp);
     const state = await globalFuncs.getState();
     console.log('func getState.meta', state);
     let foods = dayTemp? dayTemp.desayuno.concat(dayTemp.almuerzo,dayTemp.cena,dayTemp.snacks): [];
+
+    console.log('in GoaScreen getInfo metas = ',metas);
+    setGoals(metas);
 
     if(foods == 0){
       console.log('foods is [] in getNutInfo');
@@ -68,18 +67,20 @@ const Goals = ({navigation}) => {
       {text: 'Carbs', val: carbs, meta: metas.carbs},
       {text: 'Grasas', val: grasas, meta: metas.grasas},
     ]);
-    setGoals(metas);
+    
     return ;
   }
 
   React.useEffect(()=>{
     console.log('running React.useEffect in GoalScreen');
     getInfo();
-  },[metas]);
+  },[update]);
     
   const editHandler = () => {
     if(editing){
       globalFuncs.updateGoals(token, goals);
+      console.log('updateGoals to = ',goals);
+      setUpdate(!update);
     }
     setEditing(!editing);
   }
@@ -155,7 +156,7 @@ const Goals = ({navigation}) => {
             {editing?
               <View>
                 <TextInput
-                  style={[styles.input]}
+                  style={[styles.input, {width:140, borderWidth: 1}]}
                   keyboardType='numeric'
                   placeholder='Calorias'
                   value={goals.cals.toString()}
@@ -164,7 +165,7 @@ const Goals = ({navigation}) => {
                   }
                 />
                 <TextInput
-                  style={[styles.input]}
+                  style={[styles.input, {width:140, borderWidth: 1}]}
                   keyboardType='numeric'
                   placeholder='Proteinas'
                   value={goals.proteins.toString()}
@@ -173,7 +174,7 @@ const Goals = ({navigation}) => {
                   }
                 />
                 <TextInput
-                  style={[styles.input]}
+                  style={[styles.input, {width:140, borderWidth: 1}]}
                   keyboardType='numeric'
                   placeholder='Carbs'
                   value={goals.carbs.toString()}
@@ -182,7 +183,7 @@ const Goals = ({navigation}) => {
                   }
                 />
                 <TextInput
-                  style={[styles.input]}
+                  style={[styles.input, {width:140, borderWidth: 1}]}
                   keyboardType='numeric'
                   placeholder='Grasas'
                   value={goals.grasas.toString()}

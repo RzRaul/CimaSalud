@@ -72,7 +72,6 @@ const Home = ({ navigation }) => {
             title: item.name
         }));
         
-
         let dayTemp = await DayFuncs.getDayByDate(token, Dates.getToday());
         let cals = (proteinas = grasas = carbs = 0);
         setToday(dayTemp);
@@ -90,7 +89,7 @@ const Home = ({ navigation }) => {
             //console.log('foods is [] in getInfo');
             setUserInfo([
                 { text: 'Calorias', val: 0, meta: metas.cals },
-                { text: 'Proteinas', val: 0, meta: metas.proteinas },
+                { text: 'Proteinas', val: 0, meta: metas.proteins },
                 { text: 'Carbs', val: 0, meta: metas.carbs },
                 { text: 'Grasas', val: 0, meta: metas.grasas },
             ]);
@@ -106,7 +105,7 @@ const Home = ({ navigation }) => {
 
         setUserInfo([
             { text: 'Calorias', val: cals, meta: metas.cals },
-            { text: 'Proteinas', val: proteinas, meta: metas.proteinas },
+            { text: 'Proteinas', val: proteinas, meta: metas.proteins },
             { text: 'Carbs', val: carbs, meta: metas.carbs },
             { text: 'Grasas', val: grasas, meta: metas.grasas },
         ]);
@@ -265,7 +264,7 @@ const Home = ({ navigation }) => {
             });
         }
 
-        //console.log(selectedItem.id +' -> ' + selectedItem.title);
+        console.log(selectedItem.id +' -> ' + selectedItem.title);
         switch (selectedMeal) {
             case 'desayuno':
                 await DayFuncs.updateDayBreakFast(token,Dates.getToday(),selectedItem.id);              
@@ -284,7 +283,22 @@ const Home = ({ navigation }) => {
                 break;
         }
         getInfo();
+
+        if( checkGoals() ) {
+            console.log('se ha excedido la meta');
+            Alert.alert(
+                '',
+                "Se ha excidido de la meta diaria"
+            );
+        }
     };
+
+    const checkGoals = () => {
+        let ret = false;
+        userInfo.map((item) => ret = ret || (item.val <= item.meta));
+        return ret;
+    }
+
     const UserGraph = () => {
         const userData = {
             labels: userInfo.map((item) => item.text),
@@ -356,13 +370,13 @@ const Home = ({ navigation }) => {
                     <View
                         style={{
                             flexDirection: 'row',
-                            justifyContent: 'space-evenly',
+                            justifyContent: 'space-between',
                         }}
                     >
                         <TouchableImg
                             width={80}
                             text='Registrar consumo'
-                            name='restaurant-outline'
+                            name='add-circle'
                             size={35}
                             color={colors.accent}
                             img={null}
@@ -371,9 +385,23 @@ const Home = ({ navigation }) => {
                             }}
                         />
                         <TouchableImg
-                            width={130}
-                            text='Cerrar sesión'
+                            width={80}
+                            text='Sugerir comida'
                             name='restaurant-outline'
+                            size={35}
+                            color={colors.accent}
+                            img={null}
+                            onPress={() => {
+                                Alert.alert(
+                                    'Sugerencia',
+                                    'Pollo con Arroz',
+                                );
+                            }}
+                        />
+                        <TouchableImg
+                            width={80}
+                            text='Cerrar sesión'
+                            name='log-out-outline'
                             size={35}
                             color={colors.accent}
                             img={null}
